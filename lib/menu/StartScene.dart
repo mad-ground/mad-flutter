@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:madground/main.dart';
+import 'package:madground/menu/GameMenuScene.dart';
 
 class StartScenePage extends StatelessWidget {
   const StartScenePage({super.key});
@@ -21,7 +22,7 @@ class StartScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void toGameMenuScene(){ 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenuScene()));
     }
 
     void loginCheck(){
@@ -61,7 +62,7 @@ class LoginPage extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     void toGameMenuScene(){ 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenuScene()));
     }
 
     return const Scaffold(
