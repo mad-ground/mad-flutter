@@ -87,23 +87,12 @@ flutter:
   #         weight: 700
   #
   fonts:
-    - family: Alata
-      fonts:
-        - asset: fonts/alata-regular.ttf
-
     - family: NanumGothic
       fonts:
         - asset: fonts/NanumGothic/NanumGothicEco.ttf
         - asset: fonts/NanumGothic/NanumGothicEcoBold.ttf
           weight: 700
         - asset: fonts/NanumGothic/NanumGothicEcoExtraBold.ttf
-          weight: 800
-    - family: NanumSquare
-      fonts:
-        - asset: fonts/NanumSquare/NanumSquareR.ttf
-        - asset: fonts/NanumSquare/NanumSquareB.ttf
-          weight: 700
-        - asset: fonts/NanumSquare/NanumSquareEB.ttf
           weight: 800
     - family: Nanum
       fonts:
@@ -112,21 +101,6 @@ flutter:
         weight: 700
       - asset: fonts/Nanum/NanumGothicExtraBold.ttf
         weight: 800
-    - family: Roboto
-      fonts:
-        - asset: fonts/Roboto/Roboto-Regular.ttf
-        - asset: fonts/Roboto/Roboto-Bold.ttf
-          weight: 700
-        - asset: fonts/Roboto/Roboto-Black.ttf
-          weight: 800
-        - asset: fonts/Roboto/Roboto-Italic.ttf
-          style: italic
-        - asset: fonts/Roboto/Roboto-BoldItalic.ttf
-          weight: 700
-          style: italic
-        - asset: fonts/Roboto/Roboto-BlackItalic.ttf
-          weight: 800
-          style: italic
     - family: ReadexPro
       fonts:
         - asset: fonts/ReadexPro/ReadexPro-Regular.ttf
