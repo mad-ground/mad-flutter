@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
+import 'menu/StartScene.dart';
+
 
 void main() {
-  runApp(MyApp());
+  runApp(const StartScenePage());
 }
 
 class MyApp extends StatefulWidget {
