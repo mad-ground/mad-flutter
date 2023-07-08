@@ -26,22 +26,22 @@ class _MyAppState extends State<MyApp> {
       title: 'My App',
       theme: ThemeData(
         primaryColor: Colors.black,
-        textTheme: TextTheme(
-          bodyText2: TextStyle(fontSize: 24, color: Colors.black),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(fontSize: 24, color: Colors.black),
         ),
-        buttonTheme: ButtonThemeData(
+        buttonTheme: const ButtonThemeData(
           buttonColor: Color(0xff48ff54),
           textTheme: ButtonTextTheme.primary,
         ),
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('My App'),
+          title: const Text('My App'),
           backgroundColor: Colors.black,
         ),
         body: _pages[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
-          items: [
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Home',
@@ -68,6 +68,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class HomePage extends StatelessWidget {
+  
     final List<String> items = [
     'Item 1',
     'Item 2',
@@ -127,7 +128,7 @@ class SettingsPage extends StatelessWidget {
       child: Center(
         child: Text(
           'Settings Page',
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
       ),
     );
