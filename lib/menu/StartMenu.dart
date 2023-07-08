@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:madground/main.dart';
 import 'package:madground/menu/GameMenu.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:madground/socket/SocketSystem.dart';
 
 class StartMenuPage extends StatelessWidget {
   const StartMenuPage({super.key});
@@ -60,6 +61,7 @@ class LoginPage extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     void toGameMenu(String userName){ 
+      SocketSystem.connectServer();
       Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenu(userName: userName)));
     }
 
