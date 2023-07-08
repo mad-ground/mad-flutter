@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:madground/main.dart';
 import 'package:madground/menu/GameMenuScene.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 
 class StartScenePage extends StatelessWidget {
   const StartScenePage({super.key});
@@ -22,12 +23,12 @@ class StartScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void toGameMenuScene(){ 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenuScene()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenuScene(userName: "retro3014")));
     }
 
     void loginCheck(){
-      toGameMenuScene();
-      //Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+      //toGameMenuScene();
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
     }
 
     void onStartBtnPressed(){
@@ -61,13 +62,46 @@ class LoginPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    void toGameMenuScene(){ 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenuScene()));
+    void toGameMenuScene(String userName){ 
+      Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenuScene(userName: userName)));
     }
 
-    return const Scaffold(
-      
+    void naverLogin() async{
+      final NaverLoginResult result = await FlutterNaverLogin.logIn();
+      String id = result.account.name;
+      print(id);
+      String userName = id; // = checkNaverId(id);
+      toGameMenuScene(userName);
+    }
 
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                naverLogin();
+              },
+              child: const Text('Naver Login'),
+            ),
+            const SizedBox(height: 30), // Add space between the buttons
+            ElevatedButton(
+              onPressed: () {
+                // Code to execute when Button 2 is pressed
+              },
+              child: const Text('Kakao Login'),
+            ),
+            const SizedBox(height: 30), // Add space between the buttons
+            ElevatedButton(
+              onPressed: () {
+                // Code to execute when Button 3 is pressed
+              },
+              child: const Text('Login'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

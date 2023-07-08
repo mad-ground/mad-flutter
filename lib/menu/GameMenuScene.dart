@@ -2,21 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
 import 'package:madground/menu/GameMenuScene.dart';
 
-
 class GameMenuScene extends StatefulWidget {
-
+  final String userName;
+  const GameMenuScene({required this.userName});
   @override
-  State<StatefulWidget> createState() => _GameMenuScene();
+  State<StatefulWidget> createState() => _GameMenuScene(userName: userName);
 }
 
 class _GameMenuScene extends State<GameMenuScene> {
-  int _selectedIndex = 0;
-
+  String userName;
+  
   final List<Widget> _pages = [
     HomePage(),
-    ProfilePage(),
+    const ProfilePage(userName: ""),
     SettingsPage(),
   ];
+
+  _GameMenuScene({required this.userName}){
+    _pages[1] = ProfilePage(userName: userName);
+  }
+
+  int _selectedIndex = 0;
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +74,7 @@ class _GameMenuScene extends State<GameMenuScene> {
 }
 
 class HomePage extends StatelessWidget {
-  
-    final List<String> items = [
+  final List<String> items = [
     'Item 1',
     'Item 2',
     'Item 3',
@@ -78,9 +85,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        MyListView(items: items)
-      ],
+      children: [MyListView(items: items)],
     );
   }
 }
@@ -105,14 +110,36 @@ class MyListView extends StatelessWidget {
   }
 }
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  final String userName;
+  const ProfilePage({required this.userName});
   @override
+  State<ProfilePage> createState() => _ProfilePageState(userName: userName);
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String userName = "retro3014";
+  _ProfilePageState({required this.userName});
+  @override
+  String getUserName(){
+    return userName;
+  }
+
   Widget build(BuildContext context) {
     return Container(
       child: Center(
-        child: Text(
-          'Profile Page',
-          style: Theme.of(context).textTheme.bodyText2,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Profile Page',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            Text(
+              'User Name : ${getUserName()}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
         ),
       ),
     );
