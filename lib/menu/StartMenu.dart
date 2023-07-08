@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:madground/main.dart';
-import 'package:madground/menu/GameMenuScene.dart';
+import 'package:madground/menu/GameMenu.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 
-class StartScenePage extends StatelessWidget {
-  const StartScenePage({super.key});
+class StartMenuPage extends StatelessWidget {
+  const StartMenuPage({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,21 +13,18 @@ class StartScenePage extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
       ),
-      home: const StartScene(),
+      home: const StartMenu(),
     );
   }
 }
 
-class StartScene extends StatelessWidget {
-  const StartScene({super.key});
+class StartMenu extends StatelessWidget {
+  const StartMenu({super.key});
   @override
   Widget build(BuildContext context) {
-    void toGameMenuScene(){ 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenuScene(userName: "retro3014")));
-    }
+    
 
     void loginCheck(){
-      //toGameMenuScene();
       Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
     }
 
@@ -62,16 +59,21 @@ class LoginPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    void toGameMenuScene(String userName){ 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenuScene(userName: userName)));
+    void toGameMenu(String userName){ 
+      Navigator.push(context, MaterialPageRoute(builder: (context) => GameMenu(userName: userName)));
     }
 
     void naverLogin() async{
       final NaverLoginResult result = await FlutterNaverLogin.logIn();
       String id = result.account.name;
+      print(result.account.id);
       print(id);
       String userName = id; // = checkNaverId(id);
-      toGameMenuScene(userName);
+      toGameMenu(userName);
+    }
+
+    void otherLogin(){
+      toGameMenu("testUser");
     }
 
     return Scaffold(
@@ -95,7 +97,7 @@ class LoginPage extends StatelessWidget{
             const SizedBox(height: 30), // Add space between the buttons
             ElevatedButton(
               onPressed: () {
-                // Code to execute when Button 3 is pressed
+                otherLogin();
               },
               child: const Text('Login'),
             ),

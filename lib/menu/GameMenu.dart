@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
-import 'package:madground/menu/GameMenuScene.dart';
+import 'package:madground/menu/GameMenu.dart';
 
-class GameMenuScene extends StatefulWidget {
+class GameMenu extends StatefulWidget {
   final String userName;
-  const GameMenuScene({required this.userName});
+  const GameMenu({required this.userName});
   @override
-  State<StatefulWidget> createState() => _GameMenuScene(userName: userName);
+  State<StatefulWidget> createState() => _GameMenu(userName: userName);
 }
 
-class _GameMenuScene extends State<GameMenuScene> {
+class _GameMenu extends State<GameMenu> {
   String userName;
   
   final List<Widget> _pages = [
@@ -18,7 +18,7 @@ class _GameMenuScene extends State<GameMenuScene> {
     SettingsPage(),
   ];
 
-  _GameMenuScene({required this.userName}){
+  _GameMenu({required this.userName}){
     _pages[1] = ProfilePage(userName: userName);
   }
 

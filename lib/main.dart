@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
-import 'menu/StartScene.dart';
+import 'menu/StartMenu.dart';
 
 
 void main() {
-  runApp(const StartScenePage());
+  runApp(const StartMenuPage());
 }
 
