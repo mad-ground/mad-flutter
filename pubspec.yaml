@@ -86,5 +86,58 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
-  # For details regarding fonts from package dependencies,
+  fonts:
+    - family: Alata
+      fonts:
+        - asset: fonts/alata-regular.ttf
+
+    - family: NanumGothic
+      fonts:
+        - asset: fonts/NanumGothic/NanumGothicEco.ttf
+        - asset: fonts/NanumGothic/NanumGothicEcoBold.ttf
+          weight: 700
+        - asset: fonts/NanumGothic/NanumGothicEcoExtraBold.ttf
+          weight: 800
+    - family: NanumSquare
+      fonts:
+        - asset: fonts/NanumSquare/NanumSquareR.ttf
+        - asset: fonts/NanumSquare/NanumSquareB.ttf
+          weight: 700
+        - asset: fonts/NanumSquare/NanumSquareEB.ttf
+          weight: 800
+    - family: Nanum
+      fonts:
+      - asset: fonts/Nanum/NanumGothic.ttf
+      - asset: fonts/Nanum/NanumGothicBold.ttf
+        weight: 700
+      - asset: fonts/Nanum/NanumGothicExtraBold.ttf
+        weight: 800
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto/Roboto-Regular.ttf
+        - asset: fonts/Roboto/Roboto-Bold.ttf
+          weight: 700
+        - asset: fonts/Roboto/Roboto-Black.ttf
+          weight: 800
+        - asset: fonts/Roboto/Roboto-Italic.ttf
+          style: italic
+        - asset: fonts/Roboto/Roboto-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: fonts/Roboto/Roboto-BlackItalic.ttf
+          weight: 800
+          style: italic
+    - family: ReadexPro
+      fonts:
+        - asset: fonts/ReadexPro/ReadexPro-Regular.ttf
+        - asset: fonts/ReadexPro/ReadexPro-SemiBold.ttf
+          weight: 700
+        - asset: fonts/ReadexPro/ReadexPro-Bold.ttf
+          weight: 800
+        - asset: fonts/ReadexPro/ReadexPro-ExtraLight.ttf
+          weight: 200
+        - asset: fonts/ReadexPro/ReadexPro-Light.ttf
+          weight: 300
+        - asset: fonts/ReadexPro/ReadexPro-Medium.ttf
+          weight: 500
   # see https://flutter.dev/custom-fonts/#from-packages

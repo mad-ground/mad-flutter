@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class CustomButton extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
@@ -15,18 +16,34 @@ class CustomButton extends StatefulWidget {
 class _CustomButtonState extends State<CustomButton> {
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: widget.onPressed,
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-        padding: MaterialStateProperty.all<EdgeInsets>(
-          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    return Align(
+      alignment: AlignmentDirectional(0, 0.05),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
+        child: TextButton(
+          onPressed: widget.onPressed,
+          style: ElevatedButton.styleFrom(
+            fixedSize: Size(270, 50),
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+            side: const BorderSide(
+              color: Colors.white, // 선의 색상
+              width: 2.0, // 선의 두께
+            ),
+          ),
+          backgroundColor: Colors.black,
+          elevation: 10,
+        ),
+        child: Text(
+          widget.text,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontFamily: 'ReadexPro',
+            fontWeight: FontWeight.w400,
+          ),
         ),
       ),
-      child: Text(
-        widget.text,
-        style: TextStyle(fontSize: 16),
       ),
     );
   }
