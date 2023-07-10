@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
 import 'package:madground/screens/home_page.dart';
 import 'package:madground/screens/login_page.dart';
+import 'package:madground/screens/room_page.dart';
 import 'screens/profile_page.dart';
 import 'screens/setting_page.dart';
 
@@ -26,8 +27,10 @@ class _MyAppState extends State<MyApp> {
       title: 'My App',
       initialRoute: '/login',
       routes: {
+        '/': (context) => MainPage(),
         '/main': (context) => MainPage(),
         '/login': (context) => LoginPage(),
+        '/room': (context) => RoomPage(),
       },
       theme: ThemeData(
         primaryColor: Colors.black,

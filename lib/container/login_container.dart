@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
 import 'package:madground/component/text_field.dart';
 
+import '../main.dart';
+
 class LoginContainer extends StatefulWidget {
   const LoginContainer({super.key});
 
@@ -13,7 +15,7 @@ class _LoginContainerState extends State<LoginContainer> {
   @override
   Widget build(BuildContext context) {
     return // Generated code for this TabBar Widget...
-      Container(
+        Container(
       child: DefaultTabController(
         length: 2,
         initialIndex: 0,
@@ -48,6 +50,7 @@ class _LoginContainerState extends State<LoginContainer> {
     );
   }
 }
+
 class LoginTapBarView extends StatelessWidget {
   const LoginTapBarView({super.key});
 
@@ -82,7 +85,8 @@ class SigninTap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(// 수정: MainAxisSize.min으로 변경
+    return Column(
+      // 수정: MainAxisSize.min으로 변경
       children: [
         const Padding(
           padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
@@ -101,7 +105,10 @@ class SigninTap extends StatelessWidget {
           child: CustomButton(
             text: "Create Account",
             onPressed: () {
-              // Navigator.pushReplacementNamed(context, '/main');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MainPage()),
+              );
             },
           ),
         ),
@@ -132,7 +139,10 @@ class LoginTap extends StatelessWidget {
           child: CustomButton(
             text: "Login",
             onPressed: () {
-              // Navigator.pushReplacementNamed(context, '/main');
+              Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainPage()),
+                    );
             },
           ),
         ),
@@ -140,7 +150,8 @@ class LoginTap extends StatelessWidget {
           padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
           child: TextButton(
             child: Text("Forgot Password?"),
-            onPressed: () async {},
+            onPressed: () {
+            },
           ),
         ),
       ],

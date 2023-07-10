@@ -15,30 +15,29 @@ class LoginPage extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
               image: const AssetImage('assets/images/background_login.png'),
-              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.6), BlendMode.darken),
+              colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.6), BlendMode.darken),
               fit: BoxFit.cover,
             ),
           ),
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
             child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 24),
-                    child: Text("MADGROUND",
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 24),
+                  child: Text(
+                    "MADGROUND",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 40,
-                        fontFamily: 'ReadexPro',
-                        fontWeight: FontWeight.w500,
-                      ),
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontFamily: 'ReadexPro',
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  LoginContainer(),
-                ]
-              ),
+                ),
+                LoginContainer(),
+              ]),
             ),
           ),
         ),
