@@ -177,7 +177,7 @@ class _Game1PageState extends State<Game1Page> {
       });
     });
     print(_timer.toString());
-    setState((){});
+    reloadState();
   }
 
   void endTimer(){
@@ -186,7 +186,7 @@ class _Game1PageState extends State<Game1Page> {
       _isTimerRunning = false;
       _timer.cancel();
     }
-    setState((){});
+    reloadState();
   }
 
 
