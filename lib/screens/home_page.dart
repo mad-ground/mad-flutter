@@ -54,9 +54,9 @@ class RoomListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        Navigator.pushReplacement(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => RoomPage()),
         );
