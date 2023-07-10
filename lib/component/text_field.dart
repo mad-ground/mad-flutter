@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class CustomTextField extends StatefulWidget {
   final String text;
+  final ValueSetter<String> onChanged;
 
-  const CustomTextField({
+  CustomTextField({
     required this.text,
+    required this.onChanged,
   });
 
   @override
@@ -17,6 +19,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
       child: TextFormField(
+        onChanged: (value){
+          widget.onChanged(value);
+        },
         // controller: _model.emailAddressLoginController,
         obscureText: false,
         decoration: InputDecoration(

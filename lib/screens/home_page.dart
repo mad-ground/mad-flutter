@@ -34,8 +34,33 @@ class HomeListView extends StatelessWidget {
       child: Container(
         //color: const Color.fromARGB(255, 60, 60, 60),
         child: ListView.builder(
-          itemCount: items.length,
+          itemCount: items.length + 1,
           itemBuilder: (context, index) {
+            if (index == 0) {
+              return ClipRRect(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(25),
+                  bottomRight: Radius.circular(25),
+                  topLeft: Radius.circular(0),
+                  topRight: Radius.circular(0),
+                ),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 60, 60, 60),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                )
+              );
+            }
+            final item = items[index - 1]; // 헤더를 제외한 아이템 인덱스 계산
             return Padding(
               padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
               child: RoomListItem(),
@@ -98,7 +123,7 @@ class RoomListItem extends StatelessWidget {
                     ),
                     Text(
                       '8/10',
-                      style: Theme.of(context).textTheme.bodyMedium ,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
                 ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_provider/flutter_provider.dart';
+import 'package:madground/providers/user_provider.dart';
 import 'package:madground/screens/home_page.dart';
 import 'package:madground/screens/login_page.dart';
 import 'package:madground/screens/room_page.dart';
@@ -7,7 +10,14 @@ import 'screens/profile_page.dart';
 import 'screens/setting_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers:[
+      ChangeNotifierProvider(create: (context) => UserProvider()),
+    ],
+    child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -79,7 +89,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My App'),
+      title: Text('MADGROUND'),
         titleTextStyle: const TextStyle(
             fontSize: 20,
             fontFamily: 'ReadexPro',
@@ -88,6 +98,13 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Colors.black,
       ),
       body: _pages[_selectedIndex],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // FAB가 눌렸을 때 수행할 작업
+          print('FAB pressed');
+        },
+        child: Icon(Icons.add),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
