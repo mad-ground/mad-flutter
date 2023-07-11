@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:madground/type/room.dart';
+
+import '../type/user.dart';
 
 class RoomPage extends StatefulWidget {
-  final List<String> items = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-  ];
+  final Room room;
+  RoomPage({required this.room});
   @override
   State<RoomPage> createState() => _RoomPageState();
 }
 
 class _RoomPageState extends State<RoomPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,22 +58,22 @@ class _RoomPageState extends State<RoomPage> {
                           ),
                         ),
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.fromLTRB(5, 15, 5, 0),
                         child: Text(
-                          'Room Name',
+                          widget.room?.roomName ?? 'Room Name',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 30,
+                            fontSize: 27,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'ReadexPro',
                           ),
                         ),
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
                         child: Text(
-                          'Host Name',
+                          widget.room?.host.username ?? 'Host Name',
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 20,
@@ -97,7 +94,7 @@ class _RoomPageState extends State<RoomPage> {
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20))),
-                child: RoomUserListView(items: widget.items),
+                child: RoomUserListView(items: widget.room.players!),
               ),
             ),
           ],
@@ -153,30 +150,43 @@ class RoomSetting extends StatelessWidget {
   }
 }
 
-class RoomUserListView extends StatelessWidget {
-  final List<String> items;
+class RoomUserListView extends StatefulWidget {
+  final List<User> items;
 
   const RoomUserListView({required this.items});
 
   @override
+  State<RoomUserListView> createState() => _RoomUserListViewState();
+}
+
+class _RoomUserListViewState extends State<RoomUserListView> {
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-      itemCount: items.length,
+      itemCount: widget.items.length,
       itemBuilder: (context, index) {
         return Padding(
           padding: EdgeInsetsDirectional.fromSTEB(40, 0, 40, 0),
-          child: RoomUserListItem(),
+          child: RoomUserListItem(item: widget.items[index]),
         );
       },
     );
   }
 }
 
-class RoomUserListItem extends StatelessWidget {
+class RoomUserListItem extends StatefulWidget {
+  final User? item;
   const RoomUserListItem({
     super.key,
+    this.item,
   });
+
+  @override
+  State<RoomUserListItem> createState() => _RoomUserListItemState();
+}
+
+class _RoomUserListItemState extends State<RoomUserListItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -208,11 +218,11 @@ class RoomUserListItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'User',
+                      widget.item?.username ?? 'User Name',
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     Text(
-                      'state message',
+                      widget.item?.email ?? 'Email',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],

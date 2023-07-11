@@ -1,19 +1,41 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:madground/screens/room_page.dart';
+import 'package:http/http.dart' as http;
 
-class HomePage extends StatelessWidget {
-  final List<String> items = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-  ];
+import '../type/room.dart';
+
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final List<Room> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRoomList();
+  }
+
+  Future<void> fetchRoomList() async {
+    try {
+      final response = await http.get(Uri.parse('http://143.248.200.49/room'));
+      if (response.statusCode == 200) {
+        final rooms = json.decode(response.body) as List<dynamic>;
+        rooms.forEach((element) {
+          items.add(Room.fromJson(element));
+        });
+        setState(() {});
+      } else {
+        print('Failed to fetch user list. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Failed to fetch user list: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,47 +45,51 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class HomeListView extends StatelessWidget {
-  final List<String> items;
+class HomeListView extends StatefulWidget {
+  final List<Room> items;
 
   const HomeListView({required this.items});
 
+  @override
+  State<HomeListView> createState() => _HomeListViewState();
+}
+
+class _HomeListViewState extends State<HomeListView> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
         //color: const Color.fromARGB(255, 60, 60, 60),
         child: ListView.builder(
-          itemCount: items.length + 1,
+          itemCount: widget.items.length + 1,
           itemBuilder: (context, index) {
             if (index == 0) {
               return ClipRRect(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(25),
-                  bottomRight: Radius.circular(25),
-                  topLeft: Radius.circular(0),
-                  topRight: Radius.circular(0),
-                ),
-                child: Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 60, 60, 60),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(25),
+                    bottomRight: Radius.circular(25),
+                    topLeft: Radius.circular(0),
+                    topRight: Radius.circular(0),
                   ),
-                )
-              );
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 60, 60, 60),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ));
             }
-            final item = items[index - 1]; // 헤더를 제외한 아이템 인덱스 계산
+            final item = widget.items[index - 1]; // 헤더를 제외한 아이템 인덱스 계산
             return Padding(
               padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
-              child: RoomListItem(),
+              child: RoomListItem(item: item),
             );
           },
         ),
@@ -72,18 +98,25 @@ class HomeListView extends StatelessWidget {
   }
 }
 
-class RoomListItem extends StatelessWidget {
+class RoomListItem extends StatefulWidget {
+  final Room item;
   const RoomListItem({
     super.key,
+    required this.item,
   });
 
+  @override
+  State<RoomListItem> createState() => _RoomListItemState();
+}
+
+class _RoomListItemState extends State<RoomListItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => RoomPage()),
+          MaterialPageRoute(builder: (context) => RoomPage(room: widget.item)),
         );
       },
       child: Card(
@@ -117,12 +150,19 @@ class RoomListItem extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Hd',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                      child: Text(
+                        widget.item?.roomName ?? 'Room Name',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Nanum',
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700),
+                      ),
                     ),
                     Text(
-                      '8/10',
+                      widget.item?.host.username ?? 'Host Name',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],

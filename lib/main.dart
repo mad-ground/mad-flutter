@@ -43,7 +43,6 @@ class _MyAppState extends State<MyApp> {
         '/main': (context) => MainPage(),
         '/invite' : (context) => RoomInvitePage(roomName:"default"),
         '/login': (context) => LoginPage(),
-        '/room': (context) => RoomPage(),
       },
       theme: ThemeData(
         primaryColor: Colors.black,
