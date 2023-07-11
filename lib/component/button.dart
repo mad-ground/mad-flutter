@@ -32,7 +32,7 @@ class _CustomButtonState extends State<CustomButton> {
             ),
           ),
           backgroundColor: Colors.black,
-          elevation: 20,
+          elevation: 10,
         ),
         child: Text(
           widget.text,

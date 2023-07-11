@@ -9,6 +9,9 @@ import 'package:provider/provider.dart';
 import '../providers/user_provider.dart';
 
 class RoomInvitePage extends StatefulWidget {
+  final String roomName;
+  const RoomInvitePage({super.key, required this.roomName});
+
   @override
   State<RoomInvitePage> createState() => _RoomInvitePageState();
 }
@@ -78,7 +81,7 @@ class _RoomInvitePageState extends State<RoomInvitePage> {
                     fontSize: 20,
                     fontFamily: 'ReadexPro',
                     color: Colors.black,
-                    fontWeight: FontWeight.w400),
+                    fontWeight: FontWeight.w600),
               ),
               Divider(),
               RoomUserListView(

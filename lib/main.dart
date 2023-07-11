@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
+import 'package:madground/screens/room_create_page.dart';
 import 'package:madground/screens/room_invite_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_provider/flutter_provider.dart';
@@ -40,7 +41,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/': (context) => MainPage(),
         '/main': (context) => MainPage(),
-        '/invite' : (context) => RoomInvitePage(),
+        '/invite' : (context) => RoomInvitePage(roomName:"default"),
         '/login': (context) => LoginPage(),
         '/room': (context) => RoomPage(),
       },
@@ -102,8 +103,10 @@ class _MainPageState extends State<MainPage> {
       body: _pages[_selectedIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // FAB가 눌렸을 때 수행할 작업
-          print('FAB pressed');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RoomCreatePage()),
+          );
         },
         child: Icon(Icons.add),
       ),

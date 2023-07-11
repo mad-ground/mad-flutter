@@ -3,11 +3,13 @@ import 'package:http/http.dart' as http;
 import 'package:madground/component/button.dart';
 import 'package:madground/component/text_field.dart';
 import 'package:madground/providers/user_provider.dart';
+import 'package:madground/screens/home_page.dart';
 import 'package:madground/screens/room_invite_page.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
 import '../main.dart';
+import '../screens/room_create_page.dart';
 import '../type/user.dart';
 
 class LoginContainer extends StatefulWidget {
@@ -206,7 +208,7 @@ class _LoginTapState extends State<LoginTap> {
         context.read<UserProvider>().setUser(user);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => RoomInvitePage()),
+          MaterialPageRoute(builder: (context) => MainPage()),
         );
         print("성공");
       } else {
