@@ -22,7 +22,7 @@ class StartMenu extends StatelessWidget {
   const StartMenu({super.key});
   @override
   Widget build(BuildContext context) {
-    
+
 
     void loginCheck(){
       Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
@@ -32,7 +32,7 @@ class StartMenu extends StatelessWidget {
       loginCheck();
     }
 
-    
+
 
     return Scaffold(
       body: Center(
@@ -40,7 +40,7 @@ class StartMenu extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              child: const Text('Start'), 
+              child: const Text('Start'),
               onPressed: (){
                 onStartBtnPressed();
               }
@@ -55,12 +55,12 @@ class StartMenu extends StatelessWidget {
 class LoginPage extends StatelessWidget{
   const LoginPage({Key? key}) : super(key: key);
 
-  
+
 
   @override
   Widget build(BuildContext context){
-    void toGameMenu(String userName){ 
-      SocketSystem.connectServer();
+    void toGameMenu(String userName){
+      // SocketSystem.connectServer();
     }
 
     void naverLogin() async{

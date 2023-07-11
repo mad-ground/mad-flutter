@@ -2,15 +2,18 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:madground/game1/Game1Client.dart';
 import 'package:madground/game2/Game2Client.dart';
 
-
-class SocketSystem{
+class SocketSystem {
   static late IO.Socket socket;
   static late Game1System game1System;
   static late Game2System game2System;
   static String currentState = "";
-  static void connectServer(){
-    
-    socket = IO.io('http://172.10.5.147:80',IO.OptionBuilder().setTransports(['websocket']).build());
+  static void connectServer(userId) {
+    var id = userId;
+
+    socket = IO.io(
+        'http://172.10.5.147:80',
+        IO.OptionBuilder()
+            .setTransports(['websocket']).setQuery({'userId': id}).build());
     print("SERVER TEST");
 
     if (!socket.connected) {
@@ -23,65 +26,75 @@ class SocketSystem{
     });
     socket.onDisconnect((_) => print('disconnect'));
     socket.on('message', (_) => print(_));
-    
 
     // Game1System Start
 
-    socket.on('game1_userInit', (data) => {
-      if(currentState=="Game1"){
-        game1System.setUserList(data["userList"], data["userName"])
-      }
-    });
+    socket.on(
+        'game1_userInit',
+        (data) => {
+              if (currentState == "Game1")
+                {game1System.setUserList(data["userList"], data["userName"])}
+            });
 
-    socket.on('game1_turn', (data) => {
-      if(currentState=="Game1"){
-        game1System.setCurrentTurn(data["userId"], data["num"])
-      }
-    });
+    socket.on(
+        'game1_turn',
+        (data) => {
+              if (currentState == "Game1")
+                {game1System.setCurrentTurn(data["userId"], data["num"])}
+            });
 
-    socket.on("game1_userSelection", (data) => {
-      if(currentState == "Game1"){
-        game1System.showSelection(data["selection"])
-      }
-    });
+    socket.on(
+        "game1_userSelection",
+        (data) => {
+              if (currentState == "Game1")
+                {game1System.showSelection(data["selection"])}
+            });
 
-    socket.on("game1_gameOver", (data) => {
-      if(currentState == "Game1"){
-        game1System.gameOver(data["userId"], data["gameEnd"])
-      }
-    });
+    socket.on(
+        "game1_gameOver",
+        (data) => {
+              if (currentState == "Game1")
+                {game1System.gameOver(data["userId"], data["gameEnd"])}
+            });
 
-    socket.on("game1_gameEnd", (data) => {
-      if(currentState == "Game1"){
-        game1System.gameEnd()
-      }
-    });
+    socket.on(
+        "game1_gameEnd",
+        (data) => {
+              if (currentState == "Game1") {game1System.gameEnd()}
+            });
 
     // Game1System End
 
-
     // Game2System Start
 
-    socket.on("game2_initQuestion", (data) => {
-      if(currentState == "Game2"){
-        game2System.initQuestion(data["userList"], data["userNameList"], data["question"])
-      }
-    });
+    socket.on(
+        "game2_initQuestion",
+        (data) => {
+              if (currentState == "Game2")
+                {
+                  game2System.initQuestion(
+                      data["userList"], data["userNameList"], data["question"])
+                }
+            });
 
-    socket.on("game2_updateSelection", (data) => {
-      if(currentState == "Game2"){
-        game2System.updateSelection(data["userId"], data["selection"])
-      }
-    });
+    socket.on(
+        "game2_updateSelection",
+        (data) => {
+              if (currentState == "Game2")
+                {game2System.updateSelection(data["userId"], data["selection"])}
+            });
 
     // Game2System End
   }
 
-  static void emitMessage(String key, data){
-      socket.emit(key, data);
+  static void emitMessage(String key, data) {
+    socket.emit(key, data);
   }
 
-  static void setCurrentState(String currentState){
+  static void setCurrentState(String currentState) {
     SocketSystem.currentState = currentState;
+  }
+  static void disconnectSocket() {
+    socket.disconnect();
   }
 }

@@ -1,3 +1,6 @@
+import 'package:madground/type/room.dart';
+import 'package:madground/type/room_info.dart';
+
 class User {
   int id;
   String username;
@@ -5,6 +8,7 @@ class User {
   String? email;
   String? profileImage;
   String type;
+  int? roomId;
 
   User({
     required this.id,
@@ -13,6 +17,7 @@ class User {
     this.email,
     this.profileImage,
     required this.type,
+    this.roomId,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -23,6 +28,7 @@ class User {
       email: json['email'],
       profileImage: json['profileImage'],
       type: json['type'],
+      roomId: json['room'] != null ? RoomInfo.fromJson(json['room']).id : null,
     );
   }
 

@@ -187,7 +187,7 @@ class _UserListViewState extends State<UserListView> {
 
   Future<void> fetchUserList() async {
     try {
-      final response = await http.get(Uri.parse('http://143.248.200.49/user'));
+      final response = await http.get(Uri.parse('http://172.10.5.147/user'));
       if (response.statusCode == 200) {
         final users = json.decode(response.body) as List<dynamic>;
         users.forEach((element) {

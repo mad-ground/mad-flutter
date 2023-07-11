@@ -6,6 +6,7 @@ import 'package:madground/screens/login_page.dart';
 import 'package:madground/type/user.dart';
 import 'package:provider/provider.dart';
 
+import '../component/button.dart';
 import '../providers/user_provider.dart';
 
 class RoomInvitePage extends StatefulWidget {
@@ -40,7 +41,7 @@ class _RoomInvitePageState extends State<RoomInvitePage> {
 
   Future<void> fetchUserList() async {
     try {
-      final response = await http.get(Uri.parse('http://143.248.200.49/user'));
+      final response = await http.get(Uri.parse('http://172.10.5.147/user'));
       if (response.statusCode == 200) {
         final users = json.decode(response.body) as List<dynamic>;
         users.forEach((element) {
@@ -70,27 +71,42 @@ class _RoomInvitePageState extends State<RoomInvitePage> {
             fontWeight: FontWeight.w400),
         backgroundColor: Colors.black,
       ),
-      body: Container(
-        child: TextButton(
-          onPressed: () {},
-          child: Column(
-            children: [
-              Text(
-                'Selected User : ${selectedUserList.length}',
-                style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'ReadexPro',
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600),
-              ),
-              Divider(),
-              RoomUserListView(
-                  items: userList,
-                  onSelect: addSelectedList,
-                  onDeselect: removeSelectedUser)
-            ],
+      body: Stack(
+        children: [Container(
+          child: TextButton(
+            onPressed: () {},
+            child: Column(
+              children: [
+                Text(
+                  'Selected User : ${selectedUserList.length}',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'ReadexPro',
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600),
+                ),
+                Divider(),
+                RoomUserListView(
+                    items: userList,
+                    onSelect: addSelectedList,
+                    onDeselect: removeSelectedUser)
+              ],
+            ),
           ),
         ),
+        Container(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 150,
+                child: CustomButton(
+                        text: "Create Room",
+                        onPressed: () {
+                          
+                        },
+                      )
+              ),
+            ),
+        ],
       ),
     );
   }

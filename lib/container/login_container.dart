@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:madground/component/button.dart';
 import 'package:madground/component/text_field.dart';
+import 'package:madground/game1/Game1Client.dart';
 import 'package:madground/providers/user_provider.dart';
 import 'package:madground/screens/home_page.dart';
 import 'package:madground/screens/room_invite_page.dart';
+import 'package:madground/socket/SocketSystem.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
@@ -113,7 +115,7 @@ class _SigninTapState extends State<SigninTap> {
 
   void handleSignin() async {
     // 로그인 요청을 보낼 URL
-    String url = 'http://143.248.200.49/user';
+    String url = 'http://172.10.5.147/user';
 
     // 로그인 요청에 필요한 데이터 (예: 사용자 이름과 비밀번호)
     Map<String, dynamic> data = {
@@ -128,6 +130,7 @@ class _SigninTapState extends State<SigninTap> {
     if (response.statusCode == 201) {
       User user = User.fromJson(jsonDecode(response.body));
       print('가입 성공: ${user.username})');
+      SocketSystem.connectServer(user.id);
       context.read<UserProvider>().setUser(user);
       Navigator.pushReplacement(
         context,
@@ -188,11 +191,11 @@ class _LoginTapState extends State<LoginTap> {
 
     void handleLogin() async {
       // 로그인 요청을 보낼 URL
-      String url = 'http://143.248.200.49/auth/login';
+      String url = 'http://172.10.5.147/auth/login';
 
       // 로그인 요청에 필요한 데이터 (예: 사용자 이름과 비밀번호)
       Map<String, dynamic> data = {
-        'username': 'dusdh',
+        'username': 'test1',
         'password': '1234',
         // 'username': widget.username,
         // 'password': widget.password,
@@ -206,6 +209,7 @@ class _LoginTapState extends State<LoginTap> {
         User user = User.fromJson(jsonDecode(response.body)['user']);
         print('로그인 성공: ${user.username})');
         context.read<UserProvider>().setUser(user);
+        SocketSystem.connectServer(user.id);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainPage()),

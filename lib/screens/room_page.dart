@@ -1,10 +1,19 @@
-import 'package:flutter/material.dart';
-import 'package:madground/type/room.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:madground/game1/Game1Client.dart';
+import 'package:madground/type/room.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../component/button.dart';
+import '../component/button_grey.dart';
+import '../providers/user_provider.dart';
+import '../socket/SocketSystem.dart';
 import '../type/user.dart';
 
 class RoomPage extends StatefulWidget {
   final Room room;
+  var inRoom = false;
   RoomPage({required this.room});
   @override
   State<RoomPage> createState() => _RoomPageState();
@@ -15,86 +24,181 @@ class _RoomPageState extends State<RoomPage> {
   void initState() {
     super.initState();
   }
+
+  enterRoom() async {
+    //room이 없어졌을 때
+    if (widget.room.id == '') {
+      return;
+    }
+    SocketSystem.emitMessage('enterRoom', widget.room.id);
+    setState(() {
+      widget.inRoom = true;
+    });
+    // try {
+    //   final response = await http.get(Uri.parse('http://172.10.5.147/room/${widget.room.id}'));
+    //   if (response.statusCode == 200) {
+    //     final room = Room.fromJson(jsonDecode(response.body));
+    //     setState(() {});
+    //   } else {
+    //     print('Failed to fetch user list. Status code: ${response.statusCode}');
+    //   }
+    // } catch (error) {
+    //   print('Failed to fetch user list: $error');
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-      ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background_room.jpg'),
-            fit: BoxFit.cover,
+    exitRoom() {
+      Navigator.pop(context, true);
+    }
+
+    return WillPopScope(
+      onWillPop: () async {
+        // 뒤로가기 버튼을 눌렀을 때 실행할 동작을 여기에 작성하세요.
+
+        // 예를 들어, 뒤로가기 버튼을 눌렀을 때 다이얼로그를 표시하려면:
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('EXIT'),
+            content: Text('정말로 방을 나가시겠습니까?'),
+            actions: [
+              TextButton(
+                child: Text('취소'),
+                onPressed: () {
+                  Navigator.of(context).pop(false); // 다이얼로그를 닫고 뒤로가기를 취소합니다.
+                },
+              ),
+              TextButton(
+                child: Text('나가기'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                  exitRoom(); // 다이얼로그를 닫고 앱을 종료합니다.
+                },
+              ),
+            ],
           ),
+        );
+
+        // 뒤로가기를 취소하려면 false를 반환하고, 앱을 종료하려면 true를 반환합니다.
+        return false;
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
         ),
-        child: Column(
+        body: Stack(
           children: [
-            Flexible(
-                flex: 4,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 2,
-                          ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/background_room.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Flexible(
+                      flex: 4,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.network(
+                                  'https://picsum.photos/seed/55/600',
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(5, 15, 5, 0),
+                              child: Text(
+                                widget.room?.roomName ?? 'Room Name',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 27,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'ReadexPro',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
+                              child: Text(
+                                widget.room?.host?.username ?? 'Host Name',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'ReadexPro',
+                                ),
+                              ),
+                            ),
+                            RoomSetting()
+                          ],
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.network(
-                            'https://picsum.photos/seed/55/600',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(5, 15, 5, 0),
-                        child: Text(
-                          widget.room?.roomName ?? 'Room Name',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 27,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'ReadexPro',
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
-                        child: Text(
-                          widget.room?.host.username ?? 'Host Name',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'ReadexPro',
-                          ),
-                        ),
-                      ),
-                      RoomSetting()
-                    ],
+                      )),
+                  Flexible(
+                    flex: 5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20))),
+                      child: RoomUserListView(items: widget.room.players!),
+                    ),
                   ),
-                )),
-            Flexible(
-              flex: 5,
+                ],
+              ),
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
               child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20))),
-                child: RoomUserListView(items: widget.room.players!),
+                height: 150,
+                child: widget.room.host?.id ==
+                        context.watch<UserProvider>().user?.id
+                    ? CustomButton(
+                        text: "Start Game",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Game1Home()),
+                          );
+                        },
+                      )
+                    : !widget.inRoom &&
+                            context.watch<UserProvider>().user?.roomId !=
+                                widget.room.id
+                        ? CustomButton(
+                            text: "Enter Room",
+                            onPressed: () {
+                              if (widget.inRoom == false) {
+                                enterRoom();
+                              }
+                            },
+                          )
+                        : CustomButtonGrey(
+                            text: "Game Ready",
+                            onPressed: () {},
+                          ),
               ),
             ),
           ],

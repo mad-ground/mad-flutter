@@ -9,7 +9,7 @@ class Game1System {
   Game1System(this.startTimer, this.endTimer, this.reloadState);
   bool isCurrentUser = true;
   int currentUserIdx = 0;
-  
+
   List<String> userList = [];
   List<String> userNameList = [];
   int num = 31;
@@ -37,7 +37,7 @@ class Game1System {
   bool isUserValid(int r, int c){
     return (r*5+c < userNameList.length);
   }
-  
+
   Color getTextColor(int r, int c){
     if(!isUserValid(r, c)){
       return Colors.black;
@@ -74,7 +74,7 @@ class Game1System {
 
   void onBtnClick(int btnNumber){
     if(isCurrentUser){
-      // 서버 연결 시 
+      // 서버 연결 시
       //SocketSystem.emitMessage("game1_selection", btnNumber);
       endTimer();
       // TEST
@@ -96,7 +96,7 @@ class Game1System {
   }
 
   int selection = 0;
-  
+
   bool isCurrentSelection(int selection){
     return (this.selection == selection);
   }
@@ -182,10 +182,10 @@ class _Game1PageState extends State<Game1Page> {
   int _seconds = 0;
   bool _isTimerRunning = false;
   late Game1System game1System;
-  
+
   _Game1PageState(){
     game1System = Game1System(startTimer, endTimer, reloadState);
-    game1System.setUserList([], []);    
+    game1System.setUserList([], []);
     SocketSystem.game1System = game1System;
   }
 
@@ -248,7 +248,7 @@ class _Game1PageState extends State<Game1Page> {
                     child: Column(children: [
                       Image.asset('images/test.png', width: 50, height: 50),
                       Text(
-                        game1System.getUserName(0, index), 
+                        game1System.getUserName(0, index),
                         maxLines:1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 10, color: game1System.getTextColor(0, index))
@@ -275,7 +275,7 @@ class _Game1PageState extends State<Game1Page> {
                   child: Column(children: [
                       Image.asset('images/test.png', width: 50, height: 50),
                       Text(
-                        game1System.getUserName(1, index), 
+                        game1System.getUserName(1, index),
                         maxLines:1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 10, color: game1System.getTextColor(1, index))
@@ -338,7 +338,7 @@ class _Game1PageState extends State<Game1Page> {
                       game1System.onBtnClick(1);
                     }else{
                       null;
-                    }                    
+                    }
                   },
                 ),
               ),

@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchRoomList() async {
     try {
-      final response = await http.get(Uri.parse('http://143.248.200.49/room'));
+      final response = await http.get(Uri.parse('http://172.10.5.147/room'));
       if (response.statusCode == 200) {
         final rooms = json.decode(response.body) as List<dynamic>;
         rooms.forEach((element) {
@@ -162,7 +162,7 @@ class _RoomListItemState extends State<RoomListItem> {
                       ),
                     ),
                     Text(
-                      widget.item?.host.username ?? 'Host Name',
+                      widget.item?.host?.username ?? 'Host Name',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
