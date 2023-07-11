@@ -73,6 +73,7 @@ class _RoomPageState extends State<RoomPage> {
               TextButton(
                 child: Text('나가기'),
                 onPressed: () {
+                  SocketSystem.emitMessage('exitRoom', widget.room.id);
                   Navigator.of(context).pop(true);
                   exitRoom(); // 다이얼로그를 닫고 앱을 종료합니다.
                 },
@@ -151,7 +152,7 @@ class _RoomPageState extends State<RoomPage> {
                                 ),
                               ),
                             ),
-                            RoomSetting()
+                            RoomSetting(items: widget.room.players!,)
                           ],
                         ),
                       )),
@@ -180,7 +181,8 @@ class _RoomPageState extends State<RoomPage> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Game1Home()),
+                            MaterialPageRoute(
+                                builder: (context) => Game1Home()),
                           );
                         },
                       )
@@ -208,45 +210,91 @@ class _RoomPageState extends State<RoomPage> {
   }
 }
 
-class RoomSetting extends StatelessWidget {
+class RoomSetting extends StatefulWidget {
+  final List<User> items;
   const RoomSetting({
     super.key,
+    required this.items,
   });
 
   @override
+  State<RoomSetting> createState() => _RoomSettingState();
+}
+
+class _RoomSettingState extends State<RoomSetting> {
+  @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.fromLTRB(5, 15, 5, 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Text(
-            'round',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'ReadexPro',
-            ),
+          Column(
+            children: [
+              Text(
+                'round',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'ReadexPro',
+                ),
+              ),
+              Text(
+                'round',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'ReadexPro',
+                ),
+              ),
+            ],
           ),
-          Text(
-            'players',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'ReadexPro',
-            ),
+          Column(
+            children: [
+              Text(
+                'players',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'ReadexPro',
+                ),
+              ),
+              Text(
+                widget.items?.length.toString()??"0",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'ReadexPro',
+                ),
+              ),
+            ],
           ),
-          Text(
-            'time',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'ReadexPro',
-            ),
+          Column(
+            children: [
+              Text(
+                'game',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'ReadexPro',
+                ),
+              ),
+              Text(
+                '1',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'ReadexPro',
+                ),
+              ),
+            ],
           ),
         ],
       ),

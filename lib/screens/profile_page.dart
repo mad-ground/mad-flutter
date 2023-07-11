@@ -55,13 +55,11 @@ class _ProfilePageState extends State<ProfilePage> {
         elevation: 0.0,
       ),
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(color: Color.fromARGB(255, 48, 48, 48)),
         child: Column(
           children: [
-            Expanded(
-              child: Container(
+            Container(
+                height: 300,
+                decoration: const BoxDecoration(color: Color.fromARGB(255, 48, 48, 48)),
                 child: Row(
                   children: [
                     Padding(
@@ -89,20 +87,21 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
               ),
-            ),
             Container(
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20))),
-              child: Column(
-                children: [
-                  UserListView(onTap: changeProfileUser, id: widget.user.id),
-                  Container(
-                    height: 70,
-                  )
-                ],
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
+                child: Column(
+                  children: [
+                    UserListView(onTap: changeProfileUser, id: widget.user.id),
+                    Container(
+                      height: 70,
+                    )
+                  ],
+                ),
               ),
             ),
           ],
@@ -155,7 +154,7 @@ class ProfileSetting extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
-              'hi',
+              '${user?.id}',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
