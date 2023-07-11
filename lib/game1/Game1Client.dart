@@ -3,19 +3,61 @@ import 'package:madground/component/button.dart';
 import 'package:madground/menu/StartMenu.dart';
 import 'dart:async';
 import 'package:madground/socket/SocketSystem.dart';
-
+import 'dart:ui';
 
 class Game1System {
   Game1System(this.startTimer, this.endTimer, this.reloadState);
   bool isCurrentUser = true;
+  int currentUserIdx = 0;
   
-  late List<String> userList;
+  List<String> userList = [];
+  List<String> userNameList = [];
   int num = 31;
   Function startTimer, endTimer, reloadState;
-  void setUserList(List<String> userList){
-
+  void setUserList(List<String> userList, List<String> userNameList){
+    this.userList = userList;
+    // TEST
+    this.userNameList = ["retro3014asdfasdfasdf", "zetro3014", "hello", "world", "test", "test2", "test3"];
+    //this.userNameList = userNameList;
+    // TEST
+    //reloadState();
   }
+  String _getUserName(int index){
+    if(index >= userNameList.length){
+      return "";
+    }
+    if(userNameList[index].length > 10){
+      return userNameList[index].substring(0, 8)+"..";
+    }
+    return userNameList[index];
+  }
+  String getUserName(int r, int c){
+    if(!isUserValid(r, c)){
+      return "";
+    }
+    return _getUserName(r*5+c);
+  }
+  bool isUserValid(int r, int c){
+    return (r*5+c < userNameList.length);
+  }
+  
+  Color getTextColor(int r, int c){
+    if(!isUserValid(r, c)){
+      return Colors.black;
+    }
+    if(r*5+c == currentUserIdx){
+      return Colors.green;
+    }
+    return Colors.black;
+  }
+
   void setCurrentUser(String userId){
+    for(int i=0; i<userList.length; i++){
+      if(userList[i] == userId){
+        currentUserIdx = i;
+        break;
+      }
+    }
     if (userId == "my_user_id"){
       isCurrentUser = true;
       startTimer();
@@ -54,10 +96,6 @@ class Game1System {
 
   int getCurrentNum(){
     return num;
-  }
-
-  void userInit(List<String> _userList) {
-    
   }
 
   int selection = 0;
@@ -149,7 +187,8 @@ class _Game1PageState extends State<Game1Page> {
   late Game1System game1System;
   
   _Game1PageState(){
-    game1System = Game1System(startTimer, endTimer, reloadState);    
+    game1System = Game1System(startTimer, endTimer, reloadState);
+    game1System.setUserList([], []);    
   }
 
   void startTimer(){
@@ -199,38 +238,47 @@ class _Game1PageState extends State<Game1Page> {
     return Scaffold(
       body: Column(children: [
         Padding(
-          padding: const EdgeInsets.only(top: 50.0),
+          padding: EdgeInsets.only(top: 50.0, left: (MediaQuery.of(context).size.width - 360)/2),
           child: SizedBox(
-            height: 80.0,
-            child: ListView.builder(
+            height: 80,
+            child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: 5,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                  child: Column(children: [
-                    Image.asset('images/test.png', width: 50, height: 50),
-                    const Text('hello')
-                  ]),
+                return Visibility(
+                  visible: game1System.isUserValid(0, index),
+                    child: Column(children: [
+                      Image.asset('images/test.png', width: 50, height: 50),
+                      Text(game1System.getUserName(0, index), style: TextStyle(fontSize: 10, color: game1System.getTextColor(0, index)))
+                    ]),
                 );
               },
+              separatorBuilder: (context, index) => SizedBox(
+                width:27,
+              ),
             ),
           ),
         ),
-        SizedBox(
-          height: 80.0,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                child: Column(children: [
-                  Image.asset('images/test.png', width: 50, height: 50),
-                  const Text('hello')
-                ]),
-              );
-            },
+        Padding(
+          padding: EdgeInsets.only(left: (MediaQuery.of(context).size.width - 360)/2),
+          child: SizedBox(
+            height: 80,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return Visibility(
+                  visible: game1System.isUserValid(1, index),
+                  child: Column(children: [
+                      Image.asset('images/test.png', width: 50, height: 50),
+                      Text(game1System.getUserName(1, index), style: TextStyle(fontSize: 10, color: game1System.getTextColor(1, index)))
+                  ]),
+                );
+              },
+              separatorBuilder: (context, index) => SizedBox(
+                width: 27,
+              ),
+            ),
           ),
         ),
         Padding(
