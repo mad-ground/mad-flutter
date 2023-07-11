@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
+import 'package:madground/screens/room_invite_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_provider/flutter_provider.dart';
 import 'package:madground/providers/user_provider.dart';
@@ -39,6 +40,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/': (context) => MainPage(),
         '/main': (context) => MainPage(),
+        '/invite' : (context) => RoomInvitePage(),
         '/login': (context) => LoginPage(),
         '/room': (context) => RoomPage(),
       },

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:madground/component/button.dart';
 import 'package:madground/component/text_field.dart';
 import 'package:madground/providers/user_provider.dart';
+import 'package:madground/screens/room_invite_page.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
@@ -110,7 +111,7 @@ class _SigninTapState extends State<SigninTap> {
 
   void handleSignin() async {
     // 로그인 요청을 보낼 URL
-    String url = 'http://192.168.0.45/user';
+    String url = 'http://143.248.200.49/user';
 
     // 로그인 요청에 필요한 데이터 (예: 사용자 이름과 비밀번호)
     Map<String, dynamic> data = {
@@ -131,7 +132,7 @@ class _SigninTapState extends State<SigninTap> {
         MaterialPageRoute(builder: (context) => MainPage()),
       );
     } else {
-      print('가입 실패: ${response.statusCode}');
+      print('가입 실패');
     }
   }
 
@@ -185,17 +186,18 @@ class _LoginTapState extends State<LoginTap> {
 
     void handleLogin() async {
       // 로그인 요청을 보낼 URL
-      String url = 'http://192.168.0.45/auth/login';
+      String url = 'http://143.248.200.49/auth/login';
 
       // 로그인 요청에 필요한 데이터 (예: 사용자 이름과 비밀번호)
       Map<String, dynamic> data = {
-        'username': widget.username,
-        'password': widget.password,
+        'username': 'dusdh',
+        'password': '1234',
+        // 'username': widget.username,
+        // 'password': widget.password,
       };
 
       // 로그인 요청 보내기
       http.Response response = await http.post(Uri.parse(url), body: data);
-      print(response);
 
       // 응답 처리
       if (response.statusCode == 201) {
@@ -204,10 +206,23 @@ class _LoginTapState extends State<LoginTap> {
         context.read<UserProvider>().setUser(user);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainPage()),
+          MaterialPageRoute(builder: (context) => RoomInvitePage()),
         );
+        print("성공");
       } else {
-        print('로그인 실패: ${response.statusCode}');
+        setState(() {
+          widget.username = "";
+          widget.password = "";
+        });
+        // Fluttertoast.showToast(
+        //   msg: "아이디와 패스워드를 확인해 주세요",
+        //   toastLength: Toast.LENGTH_LONG,
+        //   gravity: ToastGravity.BOTTOM,
+        //   backgroundColor: Colors.grey[800],
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        print('로그인 실패');
       }
     }
 
