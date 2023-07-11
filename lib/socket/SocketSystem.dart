@@ -1,10 +1,12 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:madground/game1/Game1Client.dart';
+import 'package:madground/game2/Game2Client.dart';
 
 
 class SocketSystem{
   static late IO.Socket socket;
   static late Game1System game1System;
+  static late Game2System game2System;
   static String currentState = "";
   static void connectServer(){
     
@@ -56,6 +58,23 @@ class SocketSystem{
     });
 
     // Game1System End
+
+
+    // Game2System Start
+
+    socket.on("game2_initQuestion", (data) => {
+      if(currentState == "Game2"){
+        game2System.initQuestion(data["userList"], data["userNameList"], data["question"])
+      }
+    });
+
+    socket.on("game2_updateSelection", (data) => {
+      if(currentState == "Game2"){
+        game2System.updateSelection(data["userId"], data["selection"])
+      }
+    });
+
+    // Game2System End
   }
 
   static void emitMessage(String key, data){

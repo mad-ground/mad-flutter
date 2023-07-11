@@ -26,9 +26,6 @@ class Game1System {
     if(index >= userNameList.length){
       return "";
     }
-    if(userNameList[index].length > 10){
-      return userNameList[index].substring(0, 8)+"..";
-    }
     return userNameList[index];
   }
   String getUserName(int r, int c){
@@ -189,6 +186,7 @@ class _Game1PageState extends State<Game1Page> {
   _Game1PageState(){
     game1System = Game1System(startTimer, endTimer, reloadState);
     game1System.setUserList([], []);    
+    SocketSystem.game1System = game1System;
   }
 
   void startTimer(){
@@ -199,7 +197,7 @@ class _Game1PageState extends State<Game1Page> {
     print("$_seconds $_isTimerRunning");
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
-        print("TIMER RUNNING " + "$_seconds");
+        print("TIMER RUNNING $_seconds");
         if(!_isTimerRunning){
           _timer.cancel();
           _isTimerRunning = false;
@@ -249,7 +247,12 @@ class _Game1PageState extends State<Game1Page> {
                   visible: game1System.isUserValid(0, index),
                     child: Column(children: [
                       Image.asset('images/test.png', width: 50, height: 50),
-                      Text(game1System.getUserName(0, index), style: TextStyle(fontSize: 10, color: game1System.getTextColor(0, index)))
+                      Text(
+                        game1System.getUserName(0, index), 
+                        maxLines:1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 10, color: game1System.getTextColor(0, index))
+                      )
                     ]),
                 );
               },
@@ -271,7 +274,12 @@ class _Game1PageState extends State<Game1Page> {
                   visible: game1System.isUserValid(1, index),
                   child: Column(children: [
                       Image.asset('images/test.png', width: 50, height: 50),
-                      Text(game1System.getUserName(1, index), style: TextStyle(fontSize: 10, color: game1System.getTextColor(1, index)))
+                      Text(
+                        game1System.getUserName(1, index), 
+                        maxLines:1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 10, color: game1System.getTextColor(1, index))
+                      )
                   ]),
                 );
               },
