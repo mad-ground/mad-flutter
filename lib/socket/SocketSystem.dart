@@ -1,19 +1,19 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:madground/game1/Game1Client.dart';
 import 'package:madground/game2/Game2Client.dart';
+import 'package:madground/game3/managers/game_manager.dart';
+import 'package:madground/menu/LoadingMenu.dart';
 
 class SocketSystem {
   static late IO.Socket socket;
   static late Game1System game1System;
   static late Game2System game2System;
+  static late GameManager gameManager;
+  static late LoadingMenuSystem loadingMenuSystem;
   static String currentState = "";
-  static void connectServer(userId) {
-    var id = userId;
-
-    socket = IO.io(
-        'http://172.10.5.147:80',
-        IO.OptionBuilder()
-            .setTransports(['websocket']).setQuery({'userId': id}).build());
+  static void connectServer(){
+    
+    socket = IO.io('http://172.10.5.147:80',IO.OptionBuilder().setTransports(['websocket']).build());
     print("SERVER TEST");
 
     if (!socket.connected) {
@@ -26,6 +26,7 @@ class SocketSystem {
     });
     socket.onDisconnect((_) => print('disconnect'));
     socket.on('message', (_) => print(_));
+    
 
     // Game1System Start
 
@@ -85,6 +86,22 @@ class SocketSystem {
             });
 
     // Game2System End
+
+
+    // Game3System Start
+    socket.on("game3_userInit", (data)=> {
+      if(currentState=="Game3"){
+        gameManager.initUserList(data["userList"], data["userName"])
+      }
+    });
+
+    socket.on("game3_userGameOver", (data) => {
+      if(currentState=="Game3"){
+        gameManager.userGameOver(data["userId"], data["rank"])
+      }
+    });
+
+    // Game3System End
   }
 
   static void emitMessage(String key, data) {
@@ -93,8 +110,5 @@ class SocketSystem {
 
   static void setCurrentState(String currentState) {
     SocketSystem.currentState = currentState;
-  }
-  static void disconnectSocket() {
-    socket.disconnect();
   }
 }
