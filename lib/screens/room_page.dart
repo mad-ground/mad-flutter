@@ -32,6 +32,8 @@ class _RoomPageState extends State<RoomPage> {
     } else {
       fetchRoom();
     }
+    SocketSystem.context = context;
+    SocketSystem.roomId = widget.roomId!;
     SocketSystem.socket.on('newUser', (data) => {fetchRoom()});
     SocketSystem.socket.on('exitUser', (data) => {fetchRoom()});
     SocketSystem.socket.on('roomDelete', (data) => {print('deleted room '+data.toString()), Navigator.pop(context, true)});
@@ -69,8 +71,6 @@ class _RoomPageState extends State<RoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    SocketSystem.context = context;
-    SocketSystem.roomId = widget.room.id!;
     exitRoom() {
       Navigator.pop(context, true);
     }
@@ -226,7 +226,7 @@ class _RoomPageState extends State<RoomPage> {
                             MaterialPageRoute(
                                 builder: (context) => Game1Home()),
                           );*/
-                          SocketSystem.startGame(widget.room.id!);
+                          SocketSystem.startGame(widget.room!.id!);
                         },
                       )
                     : !widget.inRoom &&
