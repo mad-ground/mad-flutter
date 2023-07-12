@@ -11,9 +11,15 @@ class SocketSystem {
   static late GameManager gameManager;
   static late LoadingMenuSystem loadingMenuSystem;
   static String currentState = "";
-  static void connectServer(){
-    
-    socket = IO.io('http://172.10.5.147:80',IO.OptionBuilder().setTransports(['websocket']).build());
+  static void connectServer(userId){
+
+    var id = userId;
+
+    //socket = IO.io('http://172.10.5.147:80',IO.OptionBuilder().setTransports(['websocket']).build());
+    socket = IO.io(
+        'http://172.10.5.147:80',
+        IO.OptionBuilder()
+            .setTransports(['websocket']).setQuery({'userId': id}).build());
     print("SERVER TEST");
 
     if (!socket.connected) {
@@ -102,6 +108,9 @@ class SocketSystem {
     });
 
     // Game3System End
+
+
+    
   }
 
   static void emitMessage(String key, data) {
@@ -110,5 +119,9 @@ class SocketSystem {
 
   static void setCurrentState(String currentState) {
     SocketSystem.currentState = currentState;
+  }
+
+  static void disconnectSocket() {
+    socket.disconnect();
   }
 }
