@@ -6,8 +6,9 @@ import 'package:madground/socket/SocketSystem.dart';
 import 'dart:ui';
 
 class Game1System {
-  Game1System(this.startTimer, this.endTimer, this.reloadState);
+  Game1System(this.context, this.startTimer, this.endTimer, this.reloadState);
   bool isCurrentUser = true;
+  BuildContext context;
   int currentUserIdx = 0;
   
   List<String> userList = [];
@@ -42,8 +43,12 @@ class Game1System {
     if(!isUserValid(r, c)){
       return Colors.black;
     }
-    if(r*5+c == currentUserIdx){
-      return Colors.green;
+    if(r*5+c == currentUserIdx && "my_user_id" == userList[r*5+c]){
+      return Colors.purple;
+    }else if(r*5+c == currentUserIdx){
+      return Colors.red;
+    }else if("my_user_id" == userList[r*5+c]){
+      return Colors.blue;
     }
     return Colors.black;
   }
@@ -121,6 +126,9 @@ class Game1System {
 
   void gameEnd() {
       // 다음 게임으로 넘어가기
+      SocketSystem.setCurrentState("LoadingMenu");
+      
+      Navigator.pop(context);
   }
 
   void setCurrentTurn(String userId, int num){
@@ -182,12 +190,6 @@ class _Game1PageState extends State<Game1Page> {
   int _seconds = 0;
   bool _isTimerRunning = false;
   late Game1System game1System;
-  
-  _Game1PageState(){
-    game1System = Game1System(startTimer, endTimer, reloadState);
-    game1System.setUserList([], []);    
-    SocketSystem.game1System = game1System;
-  }
 
   void startTimer(){
     const int MAX_TIME = 5;
@@ -233,6 +235,10 @@ class _Game1PageState extends State<Game1Page> {
 
   @override
   Widget build(BuildContext context) {
+    game1System = Game1System(context, startTimer, endTimer, reloadState);
+    game1System.setUserList([], []);    
+    SocketSystem.game1System = game1System;
+
     return Scaffold(
       body: Column(children: [
         Padding(
@@ -245,15 +251,18 @@ class _Game1PageState extends State<Game1Page> {
               itemBuilder: (context, index) {
                 return Visibility(
                   visible: game1System.isUserValid(0, index),
-                    child: Column(children: [
-                      Image.asset('images/test.png', width: 50, height: 50),
-                      Text(
-                        game1System.getUserName(0, index), 
-                        maxLines:1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 10, color: game1System.getTextColor(0, index))
-                      )
-                    ]),
+                    child: SizedBox(
+                      width: 50,
+                      child: Column(children: [
+                        Image.asset('images/test.png', width: 50, height: 50),
+                        Text(
+                          game1System.getUserName(0, index), 
+                          maxLines:1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 10, color: game1System.getTextColor(0, index))
+                        )
+                      ]),
+                    ),
                 );
               },
               separatorBuilder: (context, index) => SizedBox(

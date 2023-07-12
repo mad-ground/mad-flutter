@@ -12,14 +12,18 @@ class Game2System {
   List<String> userSelection = [];
   List<String> userOList = [], userXList = [];
   String mySelection = "O";
+  String answer = "O";
   String question = "";
   bool isSelectionPhase = false;
   bool isShowSelection = true;
+  bool isShowAnswer = false;
 
   String getQuestion() {
     return "안녕하세요 안녕안녕";
   }
 
+
+  // 2. game2_changeSelection
   void onBtnClick(String btnType) {
     // TEST
     if(!isSelectionPhase){
@@ -36,6 +40,18 @@ class Game2System {
     reloadState();
   }
 
+  Color getBtnColor(String btnType) {
+    if(isBtnClickPhase() || (isShowAnswer && btnType==answer)){
+      if(btnType=="O"){
+        return Colors.green;
+      }else{
+        return Colors.red;
+      }
+    }else{
+      return Colors.white;
+    }
+  }
+
   bool isBtnClickPhase(){
     // TEST
     return true;
@@ -43,6 +59,7 @@ class Game2System {
     return isSelectionPhase;
   }
 
+  // 4. game2_updateSelection
   void updateSelection(String userName, String selection){
     if(selection == "O"){
       if(userXList.remove(userName)==true){
@@ -68,11 +85,16 @@ class Game2System {
     }
   }
 
+  // 1. game2_initQuestion
   void initQuestion(List<String> userList, List<String> userNameList, String question) {
     this.userList = userList;
-    this.userNameList = userNameList;
-    userOList = userNameList;
-    userXList = List.empty(growable: true);
+    this.userNameList = [];
+    userOList = [];
+    userXList = [];
+    for(int i=0; i<userNameList.length; i++){
+      this.userNameList.add(userNameList[i]);
+      this.userOList.add(userNameList[i]);
+    }
     userSelection = List.empty(growable: true);
     for(int i=0; i<userList.length; i++){
       userSelection.add("O");
@@ -85,11 +107,16 @@ class Game2System {
     reloadState();
   }
 
+  // 3. game2_finalSelection
   void sendSelection() {
     isSelectionPhase = false;
     isShowSelection = false;
     reloadState();
+    
     //SocketSystem.emitMessage("game2_finalSelection", mySelection);
+    // TEST 
+    finalResult(["O", "O", "O", "O", "X", "X", "O", "X"], "O");
+    // TEST
   }
 
   bool showTimer() {
@@ -126,6 +153,41 @@ class Game2System {
     isShowSelection = false;
     reloadState();
   }
+  
+  void showAnswer(String answer){
+    isShowAnswer = true;
+    this.answer = answer;
+
+  }
+
+  // 5. game2_finalResult
+  void finalResult(List<String> userSelectionList, String answer){
+    userOList = [];
+    userXList = [];
+    print(userNameList);
+    print(userSelectionList);
+    for(int i=0; i<userSelectionList.length; i++){
+      if("my_user_id" == userList[i]){
+        mySelection = userSelectionList[i];
+      }
+      print(userNameList[i]);
+      if(userSelectionList[i]=="O"){
+        userOList.add(userNameList[i]);
+      }else{
+        userXList.add(userNameList[i]);
+      }
+    }
+    userOList.sort();
+    userXList.sort();
+    showAnswer(answer);
+    if(mySelection != answer){
+      // Game Over
+    }
+    isShowSelection = true;
+    reloadState();
+  }
+
+  // 6. game2_gameover
 }
 
 class Game2Home extends StatelessWidget {
@@ -302,7 +364,7 @@ class _Game2PageState extends State<Game2Page> {
                       child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.green),
+                                MaterialStateProperty.all<Color>(game2System.getBtnColor("O")),
                           ),
                           onPressed: () {
                             if(game2System.isBtnClickPhase()){
@@ -395,7 +457,7 @@ class _Game2PageState extends State<Game2Page> {
                       child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
+                                MaterialStateProperty.all<Color>(game2System.getBtnColor("X")),
                           ),
                           onPressed: () {
                             if(game2System.isBtnClickPhase()){

@@ -10,6 +10,9 @@ import 'package:madground/screens/login_page.dart';
 import 'package:madground/screens/room_page.dart';
 import 'screens/profile_page.dart';
 import 'screens/setting_page.dart';
+import 'package:madground/game2/Game2Client.dart';
+import 'package:madground/game3/Game3Client.dart';
+import 'package:madground/menu/LoadingMenu.dart';
 
 void main() {
   runApp(
@@ -17,7 +20,10 @@ void main() {
       providers:[
       ChangeNotifierProvider(create: (context) => UserProvider()),
     ],
-    child: MyApp(),
+    child: Game3Home(),
+    //LoadingMenuPage(),
+    //Game2Home(),
+    //MyApp(),
     ),
   );
 }
