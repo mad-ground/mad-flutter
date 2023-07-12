@@ -10,6 +10,7 @@ import '../component/button_grey.dart';
 import '../providers/user_provider.dart';
 import '../socket/SocketSystem.dart';
 import '../type/user.dart';
+import 'package:madground/socket/SocketSystem.dart';
 
 class RoomPage extends StatefulWidget {
   final Room room;
@@ -49,6 +50,8 @@ class _RoomPageState extends State<RoomPage> {
 
   @override
   Widget build(BuildContext context) {
+    SocketSystem.context = context;
+    SocketSystem.roomId = widget.room.id!;
     exitRoom() {
       Navigator.pop(context, true);
     }
@@ -179,11 +182,12 @@ class _RoomPageState extends State<RoomPage> {
                     ? CustomButton(
                         text: "Start Game",
                         onPressed: () {
-                          Navigator.push(
+                          /*Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Game1Home()),
-                          );
+                          );*/
+                          SocketSystem.startGame(widget.room.id!);
                         },
                       )
                     : !widget.inRoom &&

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../providers/user_provider.dart';
 import '../type/room.dart';
 import '../type/user.dart';
+import 'package:madground/socket/SocketSystem.dart';
 
 class ProfileEditPage extends StatefulWidget {
   late User user;
@@ -45,7 +46,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   @override
   Widget build(BuildContext context) {
     void handleUpdate() async {
-      String url = 'http://172.10.5.147/user/${widget.user.id}';
+      String url = 'http://172.10.5.147${SocketSystem.PORT_NO}/user/${widget.user.id}';
       http.Response response =
           await http.put(Uri.parse(url), body: widget.user.toJson());
       print('response: ${widget.user.toJson()}');

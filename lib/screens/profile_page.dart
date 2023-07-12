@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../providers/user_provider.dart';
 import '../type/user.dart';
+import 'package:madground/socket/SocketSystem.dart';
 
 // class ProfilePage extends StatefulWidget {
 //   @override
@@ -185,7 +186,7 @@ class _UserListViewState extends State<UserListView> {
 
   Future<void> fetchUserList() async {
     try {
-      final response = await http.get(Uri.parse('http://172.10.5.147/user'));
+      final response = await http.get(Uri.parse('http://172.10.5.147:${SocketSystem.PORT_NO}/user'));
       if (response.statusCode == 200) {
         final users = json.decode(response.body) as List<dynamic>;
         users.forEach((element) {

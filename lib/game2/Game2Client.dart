@@ -115,7 +115,7 @@ class Game2System {
     
     //SocketSystem.emitMessage("game2_finalSelection", mySelection);
     // TEST 
-    finalResult(["O", "O", "O", "O", "X", "X", "O", "X"], "O");
+    //finalResult(["O", "O", "O", "O", "X", "X", "O", "X"], "O");
     // TEST
   }
 
@@ -161,7 +161,8 @@ class Game2System {
   }
 
   // 5. game2_finalResult
-  void finalResult(List<String> userSelectionList, String answer){
+  void finalResult(List<String> userNameList, List<String> userSelectionList, String answer){
+    this.userNameList = userNameList;
     userOList = [];
     userXList = [];
     print(userNameList);
@@ -187,7 +188,11 @@ class Game2System {
     reloadState();
   }
 
-  // 6. game2_gameover
+  // 6. game2_gameEnd
+  void gameEnd(){
+    // Game End
+  }
+
 }
 
 class Game2Home extends StatelessWidget {
@@ -227,7 +232,9 @@ class _Game2PageState extends State<Game2Page> {
   }
 
   void reloadState() {
-    setState(() {});
+    if(mounted){
+      setState((){});
+    }
   }
 
   void startTimer() {
@@ -235,7 +242,8 @@ class _Game2PageState extends State<Game2Page> {
     _seconds = MAX_TIME;
     _isTimerRunning = true;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
+      if(mounted){
+        setState(() {
         if (!_isTimerRunning) {
           _timer.cancel();
         } else if (_seconds > 0) {
@@ -249,7 +257,7 @@ class _Game2PageState extends State<Game2Page> {
           game2System.sendSelection();
         }
       });
-    });
+    }});
     reloadState();
   }
 

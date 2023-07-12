@@ -36,7 +36,9 @@ final Game game = DoodleDash();
 class _Game3PageState extends State<Game3Page> {
   
   void reloadState(){
-    setState((){});
+    if(mounted){
+      setState((){});
+    }
   }
 
   @override

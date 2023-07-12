@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:madground/screens/room_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:madground/socket/SocketSystem.dart';
 
 import '../type/room.dart';
 
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchRoomList() async {
     try {
-      final response = await http.get(Uri.parse('http://172.10.5.147/room'));
+      final response = await http.get(Uri.parse('http://172.10.5.147:${SocketSystem.PORT_NO}/room'));
       if (response.statusCode == 200) {
         final rooms = json.decode(response.body) as List<dynamic>;
         rooms.forEach((element) {

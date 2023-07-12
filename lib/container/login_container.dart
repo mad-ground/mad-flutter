@@ -11,6 +11,7 @@ import 'package:madground/socket/SocketSystem.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
+
 import '../main.dart';
 import '../screens/room_create_page.dart';
 import '../type/user.dart';
@@ -116,7 +117,7 @@ class _SigninTapState extends State<SigninTap> {
 
   void handleSignin() async {
     // 로그인 요청을 보낼 URL
-    String url = 'http://172.10.5.147/user';
+    String url = 'http://172.10.5.147:${SocketSystem.PORT_NO}/user';
 
     // 로그인 요청에 필요한 데이터 (예: 사용자 이름과 비밀번호)
     Map<String, dynamic> data = {
@@ -130,6 +131,7 @@ class _SigninTapState extends State<SigninTap> {
     // 응답 처리
     if (response.statusCode == 201) {
       User user = User.fromJson(jsonDecode(response.body));
+      SocketSystem.user = user;
       print('가입 성공: ${user.username})');
       SocketSystem.connectServer(user.id);
       context.read<UserProvider>().setUser(user);
@@ -192,14 +194,14 @@ class _LoginTapState extends State<LoginTap> {
 
     void handleLogin() async {
       // 로그인 요청을 보낼 URL
-      String url = 'http://172.10.5.147/auth/login';
+      String url = 'http://172.10.5.147:${SocketSystem.PORT_NO}/auth/login';
 
       // 로그인 요청에 필요한 데이터 (예: 사용자 이름과 비밀번호)
       Map<String, dynamic> data = {
-        'username': 'test2',
-        'password': '1234',
-        // 'username': widget.username,
-        // 'password': widget.password,
+        //'username': 'retro3014',
+        //'password': 'retro3014',
+        'username': widget.username,
+        'password': widget.password,
       };
 
       // 로그인 요청 보내기
@@ -208,6 +210,7 @@ class _LoginTapState extends State<LoginTap> {
       // 응답 처리
       if (response.statusCode == 201) {
         User user = User.fromJson(jsonDecode(response.body)['user']);
+        SocketSystem.user = user;
         print('로그인 성공: ${user.username})');
         context.read<UserProvider>().setUser(user);
         SocketSystem.connectServer(user.id);

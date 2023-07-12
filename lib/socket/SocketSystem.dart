@@ -3,21 +3,31 @@ import 'package:madground/game1/Game1Client.dart';
 import 'package:madground/game2/Game2Client.dart';
 import 'package:madground/game3/managers/game_manager.dart';
 import 'package:madground/menu/LoadingMenu.dart';
+import 'package:flutter/material.dart';
+import 'package:madground/menu/GameOverMenu.dart';
+import 'package:madground/providers/user_provider.dart';
+import 'package:madground/type/user.dart';
 
 class SocketSystem {
   static late IO.Socket socket;
   static late Game1System game1System;
   static late Game2System game2System;
   static late GameManager gameManager;
+  static late GameOverMenuSystem gameOverMenuSystem;
   static late LoadingMenuSystem loadingMenuSystem;
   static String currentState = "";
-  static void connectServer(userId){
+  static late int roomId;
+  static late BuildContext context;
+  static int PORT_NO = 80;
+  static late User user;
 
+  static void connectServer(userId){
+    
     var id = userId;
 
     //socket = IO.io('http://172.10.5.147:80',IO.OptionBuilder().setTransports(['websocket']).build());
     socket = IO.io(
-        'http://172.10.5.147:80',
+        'http://172.10.5.147:${SocketSystem.PORT_NO}',
         IO.OptionBuilder()
             .setTransports(['websocket']).setQuery({'userId': id}).build());
     print("SERVER TEST");
@@ -32,6 +42,7 @@ class SocketSystem {
     });
     socket.onDisconnect((_) => print('disconnect'));
     socket.on('message', (_) => print(_));
+    socket.on('newUser', (_) => print(_));
     
 
     // Game1System Start
@@ -40,15 +51,15 @@ class SocketSystem {
         'game1_userInit',
         (data) => {
               if (currentState == "Game1")
-                {game1System.setUserList(data["userList"], data["userName"])}
+                {game1System.setUserList(List<String>.from(data["userList"]), List<String>.from(data["userName"]))}
             });
 
     socket.on(
         'game1_turn',
         (data) => {
-              if (currentState == "Game1")
-                {game1System.setCurrentTurn(data["userId"], data["num"])}
-            });
+          if (currentState == "Game1")
+            {game1System.setCurrentTurn(data["userId"], data["num"])}
+        });
 
     socket.on(
         "game1_userSelection",
@@ -61,7 +72,7 @@ class SocketSystem {
         "game1_gameOver",
         (data) => {
               if (currentState == "Game1")
-                {game1System.gameOver(data["userId"], data["gameEnd"])}
+                {game1System.gameOver(data["userId"])}
             });
 
     socket.on(
@@ -80,16 +91,35 @@ class SocketSystem {
               if (currentState == "Game2")
                 {
                   game2System.initQuestion(
-                      data["userList"], data["userNameList"], data["question"])
+                      List<String>.from(data["userList"]), List<String>.from(data["userNameList"]), data["question"])
                 }
             });
 
     socket.on(
-        "game2_updateSelection",
-        (data) => {
-              if (currentState == "Game2")
-                {game2System.updateSelection(data["userId"], data["selection"])}
-            });
+      "game2_updateSelection",
+      (data) => {
+        if (currentState == "Game2"){
+          game2System.updateSelection(data["userId"], data["selection"])
+        }
+      });
+
+    socket.on(
+      "game2_finalResult",
+      (data) => {
+        if(currentState == "Game2"){
+          game2System.finalResult(List<String>.from(data["userNameList"]), List<String>.from(data["userSelectionList"]), data["answer"])
+        }
+      }
+    );
+
+    socket.on(
+      "game2_gameEnd",
+      (data) => {
+        if(currentState == "Game2"){
+          game2System.gameEnd()
+        }
+      }
+    );
 
     // Game2System End
 
@@ -109,11 +139,32 @@ class SocketSystem {
 
     // Game3System End
 
+    // LoadingMenu Start
 
+    socket.on("loading_startLoading", (_) => {
+      if(currentState==""){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LoadingMenuPage()))
+      }
+    });
+
+    socket.on("loading_nextGame", (data) => {
+      if(currentState=="LoadingMenu"){
+        loadingMenuSystem.setNextGame(data["gameNo"])
+      }
+    });
+
+    socket.on("loading_gameStart", (_) => {
+      if(currentState=="LoadingMenu"){
+        loadingMenuSystem.gameStart()
+      }
+    });
+
+    // LoadingMenu End
     
   }
 
   static void emitMessage(String key, data) {
+    print("emitMessage $key $data"); 
     socket.emit(key, data);
   }
 
@@ -123,5 +174,9 @@ class SocketSystem {
 
   static void disconnectSocket() {
     socket.disconnect();
+  }
+
+  static void startGame(int roomId){
+    emitMessage("game_start", roomId);
   }
 }

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:madground/screens/login_page.dart';
 import 'package:madground/type/user.dart';
 import 'package:provider/provider.dart';
+import 'package:madground/socket/SocketSystem.dart';
 
 import '../component/button.dart';
 import '../providers/user_provider.dart';
@@ -41,7 +42,7 @@ class _RoomInvitePageState extends State<RoomInvitePage> {
 
   Future<void> fetchUserList() async {
     try {
-      final response = await http.get(Uri.parse('http://172.10.5.147/user'));
+      final response = await http.get(Uri.parse('http://172.10.5.147:${SocketSystem.PORT_NO}/user'));
       if (response.statusCode == 200) {
         final users = json.decode(response.body) as List<dynamic>;
         users.forEach((element) {

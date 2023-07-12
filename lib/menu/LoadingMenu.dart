@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:madground/socket/SocketSystem.dart';
 import 'package:madground/game1/Game1Client.dart';
 import 'package:madground/game2/Game2Client.dart';
+import 'package:madground/game3/Game3Client.dart';
 
 
 class LoadingMenuSystem{
-  BuildContext context;
+  late BuildContext context;
   Function reloadState;
-  LoadingMenuSystem(this.context, this.reloadState);
+  LoadingMenuSystem(this.reloadState){
+    SocketSystem.loadingMenuSystem = this;
+    SocketSystem.setCurrentState("LoadingMenu");
+  }
   String imgLoc = "assets/images/background.jpg";
+  String imgDefault = "assets/images/background.jpg";
+  String imgGame1 = "assets/images/background.jpg";
+  String imgGame2 = "assets/images/background.jpg";
+  String imgGame3 = "assets/images/background.jpg";
   int nxtGameNo = 0;
 
   String getNextGameImg(){
@@ -16,27 +24,42 @@ class LoadingMenuSystem{
   }
 
   void setNextGame(int gameNo){
-    this.nxtGameNo = gameNo;
+    print("Set Next Game " + gameNo.toString());
+    nxtGameNo = gameNo;
+    print("Next Game No " + nxtGameNo.toString());
     if(gameNo==1){
-      
+      imgLoc = imgGame1;
     }else if(gameNo==2){
-      
+      imgLoc = imgGame2;
+    }else if(gameNo==3){
+      imgLoc = imgGame3;
     }
     reloadState();
   }
 
   void gameStart(){
+    print("Game Start");
     imgLoc = "assets/images/background.jpg";
+    print("Next Game No " + nxtGameNo.toString());
     if(nxtGameNo==1){
+      print("Game1 Start");
       SocketSystem.setCurrentState("Game1");
+      print(context);
       Navigator.push(context, MaterialPageRoute(builder: (_) => Game1Page()));
     }else if(nxtGameNo==2){
       SocketSystem.setCurrentState("Game2");
       Navigator.push(context, MaterialPageRoute(builder: (_) => Game2Page()));
       //SocketSystem.game2System.gameStart();
+    }else if(nxtGameNo==3){
+      SocketSystem.setCurrentState("Game3");
+      Navigator.push(context, MaterialPageRoute(builder: (_) => Game3Page()));
     }
   }
 
+  void setContext(BuildContext context){
+    print("Set Context");
+    this.context = context;
+  }
 }
 
 class LoadingMenuPage extends StatelessWidget {
@@ -64,15 +87,20 @@ class LoadingMenu extends StatefulWidget {
 class _LoadingMenuState extends State<LoadingMenu> {
   
   late LoadingMenuSystem loadingMenuSystem;
-
+  _LoadingMenuState(){
+    loadingMenuSystem = LoadingMenuSystem(reloadState);
+  }
 
   void reloadState(){
-    setState((){});
+    if(mounted){
+      setState((){});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    loadingMenuSystem = LoadingMenuSystem(context, reloadState);
+    print("Reload");
+    loadingMenuSystem.setContext(context);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

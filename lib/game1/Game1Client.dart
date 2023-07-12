@@ -4,24 +4,32 @@ import 'package:madground/menu/StartMenu.dart';
 import 'dart:async';
 import 'package:madground/socket/SocketSystem.dart';
 import 'dart:ui';
+import 'package:madground/menu/GameOverMenu.dart';
 
 class Game1System {
-  Game1System(this.context, this.startTimer, this.endTimer, this.reloadState);
+  Game1System(this.startTimer, this.endTimer, this.reloadState);
   bool isCurrentUser = true;
-  BuildContext context;
-  int currentUserIdx = 0;
+  late BuildContext context;
+  int currentUserIdx = -1;
 
   List<String> userList = [];
   List<String> userNameList = [];
   int num = 31;
+  bool isSelectionPhase = false;
   Function startTimer, endTimer, reloadState;
+  bool isShowTimer = false;
+
+  void initUserList(){
+    userList = [];
+    userNameList = [];
+  }
   void setUserList(List<String> userList, List<String> userNameList){
+    print("Set User List");
+    print(userList);
+    print(userNameList);
     this.userList = userList;
-    // TEST
-    this.userNameList = ["retro3014asdfasdfasdf", "zetro3014", "hello", "world", "test", "test2", "test3"];
-    //this.userNameList = userNameList;
-    // TEST
-    //reloadState();
+    this.userNameList = userNameList;
+    reloadState();
   }
   String _getUserName(int index){
     if(index >= userNameList.length){
@@ -36,18 +44,20 @@ class Game1System {
     return _getUserName(r*5+c);
   }
   bool isUserValid(int r, int c){
-    return (r*5+c < userNameList.length);
+    return (r*5+c < userList.length);
   }
 
   Color getTextColor(int r, int c){
     if(!isUserValid(r, c)){
       return Colors.black;
     }
-    if(r*5+c == currentUserIdx && "my_user_id" == userList[r*5+c]){
+    //print(SocketSystem.user.id.toString() + " " + userList[r*5+c]);
+    
+    if(r*5+c == currentUserIdx && SocketSystem.user.id.toString() == userList[r*5+c]){
       return Colors.purple;
     }else if(r*5+c == currentUserIdx){
       return Colors.red;
-    }else if("my_user_id" == userList[r*5+c]){
+    }else if(SocketSystem.user.id.toString() == userList[r*5+c]){
       return Colors.blue;
     }
     return Colors.black;
@@ -60,10 +70,13 @@ class Game1System {
         break;
       }
     }
-    if (userId == "my_user_id"){
+    if (userId == SocketSystem.user.id.toString()){
       isCurrentUser = true;
+      isSelectionPhase = true;
+      isShowTimer = true;
       startTimer();
     }else{
+      isShowTimer = true;
       isCurrentUser = false;
       startTimer();
     }
@@ -78,20 +91,22 @@ class Game1System {
   }
 
   void onBtnClick(int btnNumber){
-    if(isCurrentUser){
+    if(isCurrentUser && isSelectionPhase && btnNumber <= num){
+      isSelectionPhase = false;
+      isShowTimer = false;
       // 서버 연결 시
-      //SocketSystem.emitMessage("game1_selection", btnNumber);
+      SocketSystem.emitMessage("game1_selection", [btnNumber, SocketSystem.roomId]);
       endTimer();
       // TEST
-      showSelection(btnNumber);
+      //showSelection(btnNumber);
 
     }
     // TEST START
-    if(btnNumber==1){
+    /*if(btnNumber==1){
       setCurrentUser("my_user_id");
     }else if(btnNumber==2){
       setCurrentUser("other_user_id");
-    }
+    }*/
     reloadState();
     // TEST END
   }
@@ -108,20 +123,34 @@ class Game1System {
 
 
   void showSelection(int selection) {
-    this.selection = selection;
-    num -= selection;
+    print("Show Selection : " + selection.toString());
+    this.selection = num - selection;
+    isSelectionPhase = false;
+    isShowTimer = false;
+    num = selection;
+    endTimer();
     reloadState();
   }
 
-  void gameOver(String userId, bool gameEnd) {
+  void gameOver(String userId) {
+    print("GameOver " + userId);
     selection = 0;
-    if(userId == "my_user_id"){
+    if(userId == SocketSystem.user.id.toString()){
       // 내 게임 오버 처리
-
+        Navigator.push(context, MaterialPageRoute(builder: (context) => GameOverMenu()));
       }else{
       // 다른 유저 게임 오버 처리
-
+      for(int i=0; i<userList.length; i++){
+        if(userList[i] == userId.toString()){
+          userNameList[i] = "Game Over";
+          break;
+        }
+      }
     }
+  }
+
+  void setContext(BuildContext  context){
+    this.context = context;
   }
 
   void gameEnd() {
@@ -139,7 +168,7 @@ class Game1System {
   }
 
   Color getBtnColor(int btnNum){
-    if(!isCurrentUser && !isCurrentSelection(btnNum)){
+    if(!isSelectionPhase && !isCurrentSelection(btnNum)){
       return Colors.grey;
     }
     if(btnNum==1){
@@ -193,18 +222,19 @@ class _Game1PageState extends State<Game1Page> {
 
   _Game1PageState(){
     game1System = Game1System(startTimer, endTimer, reloadState);
-    game1System.setUserList([], []);
+    game1System.initUserList();
     SocketSystem.game1System = game1System;
   }
 
   void startTimer(){
-    const int MAX_TIME = 5;
+    const int MAX_TIME = 3;
     _seconds = MAX_TIME;
     _isTimerRunning = true;
     print("TIMER START");
     print("$_seconds $_isTimerRunning");
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
+      if(mounted){
+        setState(() {
         print("TIMER RUNNING $_seconds");
         if(!_isTimerRunning){
           _timer.cancel();
@@ -220,7 +250,7 @@ class _Game1PageState extends State<Game1Page> {
           }
         }
       });
-    });
+    }});
     print(_timer.toString());
     reloadState();
   }
@@ -236,15 +266,14 @@ class _Game1PageState extends State<Game1Page> {
 
 
   void reloadState(){
-    setState((){});
+    if(mounted){
+      setState((){});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    game1System = Game1System(context, startTimer, endTimer, reloadState);
-    game1System.setUserList([], []);    
-    SocketSystem.game1System = game1System;
-
+    game1System.setContext(context);
     return Scaffold(
       body: Column(children: [
         Padding(
@@ -304,10 +333,28 @@ class _Game1PageState extends State<Game1Page> {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 50.0),
-          child:Text(
-              "$_seconds", style: TextStyle(color: game1System.getTimerColor(), fontSize: 20),
+        Visibility(
+          visible: game1System.isShowTimer,
+          child: SizedBox(
+            height : 80,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 50.0),
+              child:Text(
+                  "$_seconds", style: TextStyle(color: game1System.getTimerColor(), fontSize: 20),
+              ),
+            ),
+          ),
+        ),
+        Visibility(
+          visible: !game1System.isShowTimer,
+          child: SizedBox(
+            height : 80,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 50.0),
+              child:Text(
+                  "", style: TextStyle(color: game1System.getTimerColor(), fontSize: 20),
+              ),
+            ),
           ),
         ),
         Padding(
