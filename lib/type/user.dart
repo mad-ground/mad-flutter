@@ -10,6 +10,7 @@ class User {
   String type;
   int? roomId;
   String? stateMessage;
+  int? hostRoomId;
 
   User(
       {required this.id,
@@ -19,7 +20,8 @@ class User {
       this.profileImage,
       required this.type,
       this.roomId,
-      this.stateMessage});
+      this.stateMessage,
+      this.hostRoomId});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -31,6 +33,7 @@ class User {
       type: json['type'],
       roomId: json['room'] != null ? RoomInfo.fromJson(json['room']).id : null,
       stateMessage: json['profileImage'],
+      hostRoomId: json['hostingRoom'] != null ? RoomInfo.fromJson(json['hostingRoom']).id : null,
     );
   }
 

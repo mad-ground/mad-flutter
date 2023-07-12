@@ -7,14 +7,16 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../component/button.dart';
 import '../component/button_grey.dart';
+import '../providers/room_provider.dart';
 import '../providers/user_provider.dart';
 import '../socket/SocketSystem.dart';
 import '../type/user.dart';
 
 class RoomPage extends StatefulWidget {
-  final Room room;
+  Room? room = null;
   var inRoom = false;
-  RoomPage({required this.room});
+  int? roomId = -1;
+  RoomPage({super.key, this.roomId});
   @override
   State<RoomPage> createState() => _RoomPageState();
 }
@@ -23,28 +25,45 @@ class _RoomPageState extends State<RoomPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.roomId == -1) {
+      widget.room = context.read<RoomProvider>().room!;
+      widget.roomId = widget.room?.id;
+    } else {
+      fetchRoom();
+    }
+    SocketSystem.socket.on('newUser', (data) => {fetchRoom()});
+    SocketSystem.socket.on('exitUser', (data) => {fetchRoom()});
+    SocketSystem.socket.on('roomDelete', (data) => {print('deleted room '+data.toString()), Navigator.pop(context, true)});
+  }
+
+  Future<void> fetchRoom() async {
+    try {
+      final response = await http
+          .get(Uri.parse('http://172.10.5.147/room/${widget.roomId}'));
+      if (response.statusCode == 200) {
+        print(response.body);
+        Provider.of<RoomProvider>(context, listen: false)
+            .setRoom(Room.fromJson(json.decode(response.body)));
+        setState(() {
+          widget.room = context.read<RoomProvider>().room!;
+        });
+      } else {
+        print('Failed to fetch user list. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Failed to fetch user list: $error');
+    }
   }
 
   enterRoom() async {
     //room이 없어졌을 때
-    if (widget.room.id == '') {
-      return;
-    }
-    SocketSystem.emitMessage('enterRoom', widget.room.id);
+    // if (widget.room?.id == '') {
+    //   return;
+    // }
+    SocketSystem.emitMessage('enterRoom', widget.room?.id);
     setState(() {
       widget.inRoom = true;
     });
-    // try {
-    //   final response = await http.get(Uri.parse('http://172.10.5.147/room/${widget.room.id}'));
-    //   if (response.statusCode == 200) {
-    //     final room = Room.fromJson(jsonDecode(response.body));
-    //     setState(() {});
-    //   } else {
-    //     print('Failed to fetch user list. Status code: ${response.statusCode}');
-    //   }
-    // } catch (error) {
-    //   print('Failed to fetch user list: $error');
-    // }
   }
 
   @override
@@ -55,32 +74,41 @@ class _RoomPageState extends State<RoomPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        // 뒤로가기 버튼을 눌렀을 때 실행할 동작을 여기에 작성하세요.
-
-        // 예를 들어, 뒤로가기 버튼을 눌렀을 때 다이얼로그를 표시하려면:
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('EXIT'),
-            content: Text('정말로 방을 나가시겠습니까?'),
-            actions: [
-              TextButton(
-                child: Text('취소'),
-                onPressed: () {
-                  Navigator.of(context).pop(false); // 다이얼로그를 닫고 뒤로가기를 취소합니다.
-                },
-              ),
-              TextButton(
-                child: Text('나가기'),
-                onPressed: () {
-                  SocketSystem.emitMessage('exitRoom', widget.room.id);
-                  Navigator.of(context).pop(true);
-                  exitRoom(); // 다이얼로그를 닫고 앱을 종료합니다.
-                },
-              ),
-            ],
-          ),
-        );
+        child:
+        widget.room == null
+            ? Scaffold(
+                extendBodyBehindAppBar: true,
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0.0,
+                ),
+                body: Container(),
+              )
+            : // 예를 들어, 뒤로가기 버튼을 눌렀을 때 다이얼로그를 표시하려면:
+            showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('EXIT'),
+                  content: Text('정말로 방을 나가시겠습니까?'),
+                  actions: [
+                    TextButton(
+                      child: Text('취소'),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pop(false); // 다이얼로그를 닫고 뒤로가기를 취소합니다.
+                      },
+                    ),
+                    TextButton(
+                      child: Text('나가기'),
+                      onPressed: () {
+                        SocketSystem.emitMessage('exitRoom', widget.room?.id);
+                        Navigator.of(context).pop(true);
+                        exitRoom(); // 다이얼로그를 닫고 앱을 종료합니다.
+                      },
+                    ),
+                  ],
+                ),
+              );
 
         // 뒤로가기를 취소하려면 false를 반환하고, 앱을 종료하려면 true를 반환합니다.
         return false;
@@ -120,12 +148,20 @@ class _RoomPageState extends State<RoomPage> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  'https://picsum.photos/seed/55/600',
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: (widget.room?.profileImage != null &&
+                                        widget.room?.profileImage != '')
+                                    ? Image.network(
+                                        widget.room?.profileImage ?? '',
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.network(
+                                        'https://picsum.photos/seed/55/600',
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                             Padding(
@@ -152,7 +188,9 @@ class _RoomPageState extends State<RoomPage> {
                                 ),
                               ),
                             ),
-                            RoomSetting(items: widget.room.players!,)
+                            RoomSetting(
+                              items: widget.room?.players ?? [],
+                            )
                           ],
                         ),
                       )),
@@ -164,7 +202,8 @@ class _RoomPageState extends State<RoomPage> {
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20))),
-                      child: RoomUserListView(items: widget.room.players!),
+                      child:
+                          RoomUserListView(items: widget.room?.players ?? []),
                     ),
                   ),
                 ],
@@ -174,7 +213,7 @@ class _RoomPageState extends State<RoomPage> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: 150,
-                child: widget.room.host?.id ==
+                child: widget.room?.host?.id ==
                         context.watch<UserProvider>().user?.id
                     ? CustomButton(
                         text: "Start Game",
@@ -188,7 +227,7 @@ class _RoomPageState extends State<RoomPage> {
                       )
                     : !widget.inRoom &&
                             context.watch<UserProvider>().user?.roomId !=
-                                widget.room.id
+                                widget.room?.id
                         ? CustomButton(
                             text: "Enter Room",
                             onPressed: () {
@@ -264,7 +303,7 @@ class _RoomSettingState extends State<RoomSetting> {
                 ),
               ),
               Text(
-                widget.items?.length.toString()??"0",
+                widget.items?.length.toString() ?? "0",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -356,12 +395,20 @@ class _RoomUserListItemState extends State<RoomUserListItem> {
             Row(children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(25),
-                child: Image.network(
-                  'https://picsum.photos/seed/55/600',
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                ),
+                child: (widget.item?.profileImage != null &&
+                        widget.item?.profileImage != '')
+                    ? Image.network(
+                        widget.item!.profileImage!,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        'https://picsum.photos/seed/55/600',
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
               ),
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),

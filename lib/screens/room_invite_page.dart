@@ -3,15 +3,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:madground/screens/login_page.dart';
+import 'package:madground/screens/room_page.dart';
 import 'package:madground/type/user.dart';
 import 'package:provider/provider.dart';
 
 import '../component/button.dart';
 import '../providers/user_provider.dart';
+import '../socket/SocketSystem.dart';
 
 class RoomInvitePage extends StatefulWidget {
   final String roomName;
-  const RoomInvitePage({super.key, required this.roomName});
+  final String roomProfileImage;
+  const RoomInvitePage(
+      {super.key, required this.roomName, required this.roomProfileImage});
 
   @override
   State<RoomInvitePage> createState() => _RoomInvitePageState();
@@ -48,8 +52,7 @@ class _RoomInvitePageState extends State<RoomInvitePage> {
           userList.add(User.fromJson(element));
         });
         var myId = context.read<UserProvider>().user?.id;
-        userList.removeWhere(
-            (user) => user.id == myId);
+        userList.removeWhere((user) => user.id == myId);
         setState(() {});
       } else {
         print('Failed to fetch user list. Status code: ${response.statusCode}');
@@ -61,6 +64,21 @@ class _RoomInvitePageState extends State<RoomInvitePage> {
 
   @override
   Widget build(BuildContext context) {
+    void handleCreate() async {
+      SocketSystem. socket.on(
+        "roomCreated",
+            (data) => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RoomPage(roomId: data)),
+              )
+            });
+      SocketSystem.emitMessage(
+          'createRoom', [widget.roomName, widget.roomProfileImage]);
+      Navigator.of(context).pop(true);
+      Navigator.of(context).pop(true);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Invite User'),
@@ -72,40 +90,40 @@ class _RoomInvitePageState extends State<RoomInvitePage> {
         backgroundColor: Colors.black,
       ),
       body: Stack(
-        children: [Container(
-          child: TextButton(
-            onPressed: () {},
-            child: Column(
-              children: [
-                Text(
-                  'Selected User : ${selectedUserList.length}',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'ReadexPro',
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600),
-                ),
-                Divider(),
-                RoomUserListView(
-                    items: userList,
-                    onSelect: addSelectedList,
-                    onDeselect: removeSelectedUser)
-              ],
-            ),
-          ),
-        ),
-        Container(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 150,
-                child: CustomButton(
-                        text: "Create Room",
-                        onPressed: () {
-                          
-                        },
-                      )
+        children: [
+          Container(
+            child: TextButton(
+              onPressed: () {},
+              child: Column(
+                children: [
+                  Text(
+                    'Selected User : ${selectedUserList.length}',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'ReadexPro',
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  Divider(),
+                  RoomUserListView(
+                      items: userList,
+                      onSelect: addSelectedList,
+                      onDeselect: removeSelectedUser)
+                ],
               ),
             ),
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+                height: 150,
+                child: CustomButton(
+                  text: "Create Room",
+                  onPressed: () {
+                    handleCreate();
+                  },
+                )),
+          ),
         ],
       ),
     );
@@ -192,12 +210,20 @@ class _RoomUserListItemState extends State<RoomUserListItem> {
             Row(children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(25),
-                child: Image.network(
-                  'https://picsum.photos/seed/55/600',
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                ),
+                child: (widget.item.profileImage != null &&
+                        widget.item.profileImage != '')
+                    ? Image.network(
+                        widget.item.profileImage!,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        'https://picsum.photos/seed/55/600',
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
               ),
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
