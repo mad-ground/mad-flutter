@@ -5,6 +5,7 @@ import 'package:madground/component/text_field.dart';
 import 'package:madground/game1/Game1Client.dart';
 import 'package:madground/providers/user_provider.dart';
 import 'package:madground/screens/home_page.dart';
+import 'package:madground/screens/profile_edit.dart';
 import 'package:madground/screens/room_invite_page.dart';
 import 'package:madground/socket/SocketSystem.dart';
 import 'package:provider/provider.dart';

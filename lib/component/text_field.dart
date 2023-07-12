@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatefulWidget {
   final String text;
   final ValueSetter<String> onChanged;
+  final String? initText;
 
   CustomTextField({
     required this.text,
     required this.onChanged,
+    this.initText,
   });
 
   @override
@@ -19,6 +21,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
       child: TextFormField(
+        initialValue: widget.initText,
         onChanged: (value){
           widget.onChanged(value);
         },
@@ -27,7 +30,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
         decoration: InputDecoration(
           labelStyle: Theme.of(context).textTheme.bodyMedium,
           hintText: widget.text,
-          hintStyle: Theme.of(context).textTheme.bodyMedium,
+          hintStyle: TextStyle(
+                color: Color.fromARGB(255, 147, 147, 147),
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: Color(0x00000000),

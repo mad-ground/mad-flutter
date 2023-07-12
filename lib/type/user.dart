@@ -9,16 +9,17 @@ class User {
   String? profileImage;
   String type;
   int? roomId;
+  String? stateMessage;
 
-  User({
-    required this.id,
-    required this.username,
-    required this.name,
-    this.email,
-    this.profileImage,
-    required this.type,
-    this.roomId,
-  });
+  User(
+      {required this.id,
+      required this.username,
+      required this.name,
+      this.email,
+      this.profileImage,
+      required this.type,
+      this.roomId,
+      this.stateMessage});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -29,17 +30,28 @@ class User {
       profileImage: json['profileImage'],
       type: json['type'],
       roomId: json['room'] != null ? RoomInfo.fromJson(json['room']).id : null,
+      stateMessage: json['profileImage'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
+    Map<String, dynamic> json = {
       'username': username,
-      'name': name,
-      'email': email,
-      'profileImage': profileImage,
       'type': type,
     };
+    if (profileImage != null && profileImage != '') {
+      json['profileImage'] = profileImage;
+    }
+    if (email != null && email != '') {
+      json['email'] = email;
+    }
+    if (name != null && name != '') {
+      json['name'] = name;
+    }
+    if (stateMessage != null && stateMessage != '') {
+      json['stateMessage'] = stateMessage;
+    }
+
+    return json;
   }
 }

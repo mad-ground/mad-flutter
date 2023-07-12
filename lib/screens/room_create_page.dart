@@ -37,50 +37,53 @@ class _RoomCreatePageState extends State<RoomCreatePage> {
       body: Container(
         child: Stack(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.all(20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.network(
-                      'https://picsum.photos/seed/55/600',
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(30, 0, 30, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.all(20),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.network(
+                        'https://picsum.photos/seed/55/600',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  child: Text(
-                    'Room Name',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'ReadexPro',
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600),
+                  Container(
+                    child: Text(
+                      'Room Name',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'ReadexPro',
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
-                ),
-                Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
-                    child: CustomTextField(
-                        text: "Room Name", onChanged: onRoomNameChanged)),
-                // Container(
-                //   child: Text(
-                //     'Room Password',
-                //     style: TextStyle(
-                //         fontSize: 20,
-                //         fontFamily: 'ReadexPro',
-                //         color: Colors.black,
-                //         fontWeight: FontWeight.w600),
-                //   ),
-                // ),
-                // Padding(
-                //   padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
-                //   child:
-                //
-              ],
+                  Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
+                      child: CustomTextField(
+                          text: "Room Name", onChanged: onRoomNameChanged)),
+                  // Container(
+                  //   child: Text(
+                  //     'Room Password',
+                  //     style: TextStyle(
+                  //         fontSize: 20,
+                  //         fontFamily: 'ReadexPro',
+                  //         color: Colors.black,
+                  //         fontWeight: FontWeight.w600),
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
+                  //   child:
+                  //
+                ],
+              ),
             ),
             Container(
               alignment: Alignment.bottomCenter,

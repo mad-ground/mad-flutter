@@ -42,7 +42,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     changeProfileUser(user) {
-      print(user.id);
       setState(() {
         widget.user = user;
       });
