@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:madground/providers/room_provider.dart';
 import 'package:madground/screens/room_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:madground/socket/SocketSystem.dart';
+import 'package:provider/provider.dart';
 
 import '../type/room.dart';
 
@@ -116,9 +118,9 @@ class _RoomListItemState extends State<RoomListItem> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RoomPage(room: widget.item)),
-        );
+              context,
+              MaterialPageRoute(builder: (context) => RoomPage(roomId: widget.item.id!)),
+            );
       },
       child: Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -138,12 +140,20 @@ class _RoomListItemState extends State<RoomListItem> {
                   topLeft: Radius.circular(8),
                   topRight: Radius.circular(0),
                 ),
-                child: Image.network(
-                  'https://picsum.photos/seed/55/600',
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                ),
+                child: (widget.item.profileImage != null &&
+                        widget.item.profileImage != '')
+                    ? Image.network(
+                        widget.item.profileImage!,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        'https://picsum.photos/seed/55/600',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
               ),
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),

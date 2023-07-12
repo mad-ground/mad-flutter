@@ -198,8 +198,6 @@ class _LoginTapState extends State<LoginTap> {
 
       // 로그인 요청에 필요한 데이터 (예: 사용자 이름과 비밀번호)
       Map<String, dynamic> data = {
-        //'username': 'retro3014',
-        //'password': 'retro3014',
         'username': widget.username,
         'password': widget.password,
       };

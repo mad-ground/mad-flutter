@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:madground/component/button.dart';
+import 'package:madground/providers/room_provider.dart';
 import 'package:madground/screens/room_create_page.dart';
 import 'package:madground/screens/room_invite_page.dart';
 import 'package:provider/provider.dart';
@@ -18,14 +19,11 @@ import 'package:madground/menu/LoadingMenu.dart';
 void main() {
   runApp(
     MultiProvider(
-      providers:[
-      ChangeNotifierProvider(create: (context) => UserProvider()),
-    ],
-    child: //Game1Home(),
-    //Game3Home(),
-    //LoadingMenuPage(),
-    //Game2Home(),
-    MyApp(),
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => RoomProvider()),
+      ],
+      child: MyApp(),
     ),
   );
 }
@@ -49,7 +47,6 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/': (context) => MainPage(),
         '/main': (context) => MainPage(),
-        '/invite' : (context) => RoomInvitePage(roomName:"default"),
         '/login': (context) => LoginPage(),
       },
       theme: ThemeData(
@@ -99,7 +96,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      title: Text('MADGROUND'),
+        title: Text('MADGROUND'),
         titleTextStyle: const TextStyle(
             fontSize: 20,
             fontFamily: 'ReadexPro',

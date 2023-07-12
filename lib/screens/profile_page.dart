@@ -1,31 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:madground/screens/profile_edit.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../providers/user_provider.dart';
 import '../type/user.dart';
 import 'package:madground/socket/SocketSystem.dart';
-
-// class ProfilePage extends StatefulWidget {
-//   @override
-//   State<ProfilePage> createState() => _ProfilePageState();
-// }
-
-// class _ProfilePageState extends State<ProfilePage> {
-//   @override
-//   Widget build(BuildContext context) {
-
-//     return Container(
-//       child: Center(
-//         child: Text(
-//           '현재 유저: ${context.watch<UserProvider>().user?.username}',
-//           style: Theme.of(context).textTheme.bodyText2,
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class ProfilePage extends StatefulWidget {
   late User user;
@@ -74,12 +55,19 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(50),
-                          child: Image.network(
-                            'https://picsum.photos/seed/55/600',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
+                          child: (widget.user.profileImage != null &&
+                              widget.user.profileImage != '')
+                            ? Image.network(
+                                widget.user.profileImage!,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ): Image.network(
+                                'https://picsum.photos/seed/55/600',
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
                         ),
                       ),
                     ),
@@ -163,6 +151,24 @@ class ProfileSetting extends StatelessWidget {
               ),
             ),
           ),
+            user?.id == context.read<UserProvider>().user!.id ? TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileEditPage(),
+                  ),
+                );
+              },
+              child: Text(
+                'Edit Profile',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'ReadexPro',
+                ),
+              ),
+            ):Container(),
         ],
       ),
     );
@@ -259,13 +265,20 @@ class _UserListItemState extends State<UserListItem> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: Image.network(
-                    'https://picsum.photos/seed/55/600',
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
+                  borderRadius: BorderRadius.circular(30),
+                  child: (widget.item.profileImage != null &&
+                      widget.item.profileImage != '')
+                    ? Image.network(
+                        widget.item.profileImage!,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      ): Image.network(
+                        'https://picsum.photos/seed/55/600',
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      ),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
